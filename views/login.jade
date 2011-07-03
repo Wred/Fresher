@@ -12,11 +12,17 @@ html(lang="en")
 		h2 Login
 		- if (error.id)
 			p #{error.msg}
-		form(method="post")
+		form(method="get")
+			input(name="project"
+				type="text"
+				value=query.project
+			)
 			input(name="user"
 				type="text"
+				value=query.user
 			)
 			input(name="password"
 				type="password"
+				value=query.password
 			)
 			input(type="submit")
