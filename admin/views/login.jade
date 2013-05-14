@@ -1,0 +1,38 @@
+!!! 5
+html(lang="en")
+	head
+		title Fresher v3
+		link(rel="stylesheet", type="text/css", href="/styles/common.css")
+		script(src="/js/md5.js")
+		script
+			function login(form) {
+				//if ((form.username.value == "")
+				//	|| (form.password.value == "")
+				//	|| (form.project.value == "")) {
+				//	return false;
+				//} else {
+					// hash the password
+					var pw = hex_md5(hex_md5(form.password.value) + "#{salt}");
+					form.password.value = pw;
+
+					//combine it with salt
+					// ok to continue
+					return true;
+				//}
+			}
+	body
+		h2 Login
+		- if (error.id)
+			p #{error.msg}
+		form(method="post"
+			onsubmit="return login(this)"
+		)
+			input(name="user"
+				type="text"
+				value=query.user
+			)
+			input(name="password"
+				type="password"
+				value=query.password
+			)
+			input(type="submit")
