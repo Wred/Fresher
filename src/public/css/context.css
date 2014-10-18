@@ -1,0 +1,43 @@
+﻿TABLE
+{
+border-top: 1px solid #5A85CC;
+border-left: 1px solid #5A85CC;
+border-right: 1px solid #5A85CC;
+border-bottom: 2px solid #CEDBF0;
+}
+
+TD
+{
+border-bottom: 1px solid #5A85CC;
+font-family: Tahoma, Verdana, Arial;
+font-size: 10px;
+font-weight: Bold;
+color: #5A85CC;
+letter-spacing: 0px;
+}
+
+TD A:link
+{
+text-decoration: none;
+color: #5A85CC;
+}
+
+TD A:hover
+{
+text-decoration: underline;
+color: #365491;
+}
+
+TD A:active
+{
+text-decoration: underline;
+color: #FFCE06;
+}
+
+TD A:visited
+{
+color: #5A85CC;
+text-decoration: none;
+}
+
+

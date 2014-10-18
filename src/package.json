@@ -1,0 +1,14 @@
+{
+  "name": "Fresher",
+  "description": "Content Management System",
+  "version": "3.0.0",
+  "author": "Andre Milton <andre@mediafresh.net>",
+  "dependencies": {
+    "express": "~4.1.1",
+    "nconf": "0.6.9",
+    "jade": "~1.5.0",
+    "body-parser": "~1.6.5",
+    "mers": "~0.9.3"
+  },
+  "engine": "node >= 0.10.28"
+}
