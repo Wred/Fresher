@@ -4,7 +4,7 @@ function Publications() {
     this.load = function (cb) {
         var self = this;
         $.ajax({
-            url:"/publications",
+            url:"/rest/publication",
             complete:function (data) {
                 self.items = data.responseJSON;
                 cb();
