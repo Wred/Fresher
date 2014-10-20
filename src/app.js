@@ -14,6 +14,8 @@ app.use(express.static(__dirname + '/public'));
 
 // models
 require('models/publication')(mongoose);
+require('models/page')(mongoose);
+require('models/config')(mongoose);
 
 // REST to mongodb (using mongoose models)
 app.use('/rest', require('mers')({mongoose:mongoose}).rest());

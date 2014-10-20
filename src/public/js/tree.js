@@ -8,9 +8,9 @@ function Tree(initObj) {
 
 	initTree(initObj.rootID, 'images/icons/');
 
-	function initTree(page, p_strIconPath) {
+	function initTree(id, p_strIconPath) {
 		g_strIconPath = p_strIconPath;
-		loadNode(page);
+		loadNode(id);
 	}
 
 
@@ -108,8 +108,8 @@ function Tree(initObj) {
 
 
 
-	function loadNode(page) {
-		initObj.onLoad(page, readNodeData);
+	function loadNode(id) {
+		initObj.onLoad(id, readNodeData);
 	}
 
 
@@ -117,13 +117,10 @@ function Tree(initObj) {
 	function readNodeData(p_data) {	
 		var l_dataFirstNode = null;
 
-		for (var l_node in p_data) {
-			if (l_node != "eof") {
-				if (l_dataFirstNode == null)
-					l_dataFirstNode = l_node;
-				createNode(l_node, p_data[l_node]);
-			}
-		}
+		if (l_dataFirstNode == null)
+			l_dataFirstNode = p_data._id;
+		
+		createNode(p_data._id, p_data);
 		
 		// bit of a hack...
 		if (l_dataFirstNode) {
@@ -272,7 +269,7 @@ function Tree(initObj) {
 			l_plus.idNode = id
 			
 			l_plus.className = "expand"
-			if (l_data.data) {
+			if (l_data.subs.length) {
 				// add interactivity
 				l_plus.onmousedown = function(e) {
 					expandNode(this.idNode, !g_data[this.idNode].expanded)
@@ -281,7 +278,7 @@ function Tree(initObj) {
 					return false
 				}
 				
-				if (l_data.countChildren == 0)
+				if (l_data.subs.length == 0)
 					// hide children for now
 					l_plus.innerHTML = "&nbsp;"
 				else
@@ -385,7 +382,7 @@ function Tree(initObj) {
 	}
 
 
-	function expandNode (id, p_bool) {
+	function expandNode (id, shouldLoad) {
 		var l_data = g_data[id]
 		
 		if (l_data.loaded) {
@@ -396,12 +393,14 @@ function Tree(initObj) {
 				l_data.plus.innerHTML = "&nbsp;"
 			}
 		} else {
-			if ((p_bool) && (l_data.data)) {
+			if (shouldLoad && (l_data.subs.length)) {
 				// load data
 				l_data.divChildren.className = "childNodes"
 				l_data.plus.innerHTML = "O"
 				
-				loadNode(l_data.data)
+				for (var i=0;i<l_data.subs.length;i++) {
+					loadNode(l_data.subs[i]);
+				}
 			}
 		}
 	}

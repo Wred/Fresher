@@ -1,8 +1,8 @@
 function Config(cb) {
     $.ajax({
-        url:"/config",
+        url:"/rest/config",
         complete:function (data) {
-            cb(data.responseJSON);
+            cb(data.responseJSON.payload[0]);
         }
     });
 }

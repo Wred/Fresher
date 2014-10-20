@@ -6,7 +6,7 @@ function Publications() {
         $.ajax({
             url:"/rest/publication",
             complete:function (data) {
-                self.items = data.responseJSON;
+                self.items = data.responseJSON.payload;
                 cb();
             }
         });

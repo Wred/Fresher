@@ -19,9 +19,9 @@ window.onload = function () {
 			rootID:publications.items[0].rootPage,
 			onLoad:function (id, cb) {
 					$.ajax({
-						url:"/page/" + id,
+						url:"/rest/page/" + id,
 						complete:function (data) {
-							cb(data.responseJSON);
+							cb(data.responseJSON.payload);
 						}
 					});
 			},
