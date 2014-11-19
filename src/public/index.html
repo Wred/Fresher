@@ -12,10 +12,14 @@ var tree,
 
 window.onload = function () {
 	
+	// load publications first
 	publications.load(function () {
+		
+		// publications.items has all the publications
 		
 		tree = Tree({
 			div:document.getElementById("tree"),
+			// load first publication for now
 			rootID:publications.items[0].rootPage,
 			onLoad:function (id, cb) {
 					$.ajax({
@@ -67,7 +71,6 @@ window.onload = function () {
 			}
 		});
 	});
-
 }
 
 
