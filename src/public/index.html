@@ -37,6 +37,16 @@ window.onload = function () {
 			},
 			onRename:function(id, name) {
 				console.log("renaming: "+ id +"\n\tname: "+ escape(name));
+				$.ajax({
+					type:"PUT",
+					url:"/rest/page/" + id,
+					contentType : 'application/json',
+					dataType:"JSON",
+					data:JSON.stringify({name:name}),
+					complete:function (xhr) {
+						console.log(xhr.responseJSON.payload);
+					}
+				})
 			},
 			onContext:function(id, cb) {
 				if (id) {

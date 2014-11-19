@@ -10,7 +10,7 @@ app.set('views', __dirname);
 app.set('view engine', 'jade');
 
 app.use(express.static(__dirname + '/public'));
-// app.use(require("body-parser").json());
+app.use(require("body-parser").json());
 
 // models
 require('models/publication')(mongoose);
