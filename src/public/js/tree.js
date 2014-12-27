@@ -2,14 +2,14 @@ function Tree(initObj) {
 	var idSelected = null;
 	var idFocus = null;
 	var idEditing = null;
-	var g_divTree = initObj.div;
-	var g_data = {};
-	var g_strIconPath;
+	var divTree = initObj.div;
+	var data = {};
+	var strIconPath;
 
 	initTree(initObj.rootID, 'images/icons/');
 
 	function initTree(id, p_strIconPath) {
-		g_strIconPath = p_strIconPath;
+		strIconPath = p_strIconPath;
 		loadNode(id);
 	}
 
@@ -136,12 +136,12 @@ function Tree(initObj) {
 		
 		var l_data
 		
-		if (g_data[id]) {
-			l_data = g_data[id]
+		if (data[id]) {
+			l_data = data[id]
 		} else {
 			l_data = new Object()
 			// store it
-			g_data[id] = l_data
+			data[id] = l_data
 		}
 		
 		// copy p_data into l_data
@@ -156,7 +156,7 @@ function Tree(initObj) {
 			l_data.divName.innerHTML = l_data.name
 			
 			// udpate image
-			l_data.img.setAttribute("src", g_strIconPath + l_data.image)
+			l_data.img.setAttribute("src", strIconPath + l_data.image)
 
 			// should check to see if we have proper parent...
 			
@@ -178,10 +178,10 @@ function Tree(initObj) {
 			// does parent exist?
 			if (document.getElementById(l_data.parentID)) {
 				// must be child node
-				g_data[l_data.parentID].divChildren.appendChild(l_data.div)
+				data[l_data.parentID].divChildren.appendChild(l_data.div)
 			} else {
 				// must be root node
-				g_divTree.appendChild(l_div)
+				divTree.appendChild(l_div)
 			}
 			
 			// add drop target response (when draggin another div)
@@ -209,7 +209,7 @@ function Tree(initObj) {
 			l_divDrop.onmouseover = function (e){
 				focusNode(this.idNode)
 				if ((divDragging) || (divDragWaiting)) {
-					if (setDropTarget(g_data[this.idNode].div, true)) {
+					if (setDropTarget(data[this.idNode].div, true)) {
 						var evt=fixe(e)
 						evt.cancelBubble = true
 						return false
@@ -232,7 +232,7 @@ function Tree(initObj) {
 				if (idEditing == this.idNode)
 					return true
 			
-				//eval (unescape(g_data[this.idNode].load))
+				//eval (unescape(data[this.idNode].load))
 				selectNode(this.idNode)
 				
 				// in case we were dragging...
@@ -240,8 +240,8 @@ function Tree(initObj) {
 				
 				// start a drag (wait for it)
 				if (typeof initObj.onDrop == "function")
-					if (document.getElementById(g_data[this.idNode].parentID))
-						divDragWaiting = g_data[this.idNode].div
+					if (document.getElementById(data[this.idNode].parentID))
+						divDragWaiting = data[this.idNode].div
 
 				evt.cancelBubble = true
 				return false
@@ -252,7 +252,7 @@ function Tree(initObj) {
 				//selectNode(this.idNode)
 				
 				if (typeof initObj.onContext == "function")
-					initObj.onContext(g_data[this.idNode].id, function (err, data) {
+					initObj.onContext(data[this.idNode].id, function (err, data) {
 						// show our context menu
 						showContext(id, data);
 					});
@@ -272,7 +272,7 @@ function Tree(initObj) {
 			if (l_data.subs.length) {
 				// add interactivity
 				l_plus.onmousedown = function(e) {
-					expandNode(this.idNode, !g_data[this.idNode].expanded)
+					expandNode(this.idNode, !data[this.idNode].expanded)
 					var evt=fixe(e)
 					evt.cancelBubble = true
 					return false
@@ -293,7 +293,7 @@ function Tree(initObj) {
 			l_divNode.appendChild(l_img)
 			l_data.img = l_img
 			
-			l_img.setAttribute("src", g_strIconPath + l_data.image)
+			l_img.setAttribute("src", strIconPath + l_data.image)
 			l_img.className = "nodeImage"
 			
 			
@@ -355,13 +355,13 @@ function Tree(initObj) {
 		editNodeNameChange()
 		
 		if (idSelected)
-			g_data[idSelected].divName.className = "nodeName"
+			data[idSelected].divName.className = "nodeName"
 		
 		idSelected = id
 		
 		if (idSelected) {
 			focusNode(idSelected)
-			g_data[idSelected].divName.className = "nodeNameSelected"
+			data[idSelected].divName.className = "nodeNameSelected"
 			// call click function
 			initObj.onClick(idSelected);
 		}
@@ -372,18 +372,18 @@ function Tree(initObj) {
 		if (idEditing && (id == idEditing))
 			return
 		
-		if (idFocus && g_data[idFocus] && (idFocus != idSelected) && (idFocus != idEditing))
-			g_data[idFocus].divName.className = "nodeName"
+		if (idFocus && data[idFocus] && (idFocus != idSelected) && (idFocus != idEditing))
+			data[idFocus].divName.className = "nodeName"
 			
 		idFocus = id
 		
 		if ((idFocus) && (idFocus != idSelected))
-			g_data[idFocus].divName.className = "nodeNameOver"
+			data[idFocus].divName.className = "nodeNameOver"
 	}
 
 
 	function expandNode (id, shouldLoad) {
-		var l_data = g_data[id]
+		var l_data = data[id]
 		
 		if (l_data.loaded) {
 			if (l_data.divChildren.childNodes.length) {
@@ -406,7 +406,7 @@ function Tree(initObj) {
 	}
 
 	function expandNodeRecurse (id, p_bool) {
-		var l_data = g_data[id]
+		var l_data = data[id]
 		
 		if (!l_data.loaded)
 			return
@@ -444,11 +444,11 @@ function Tree(initObj) {
 		selectNode(l_next);
 		
 		// remove the child
-		var l_div = g_data[id].div;
+		var l_div = data[id].div;
 		l_div.parentNode.removeChild(l_div);
 		
 		// forget the data (this should get all child objects)
-		delete g_data[id];
+		delete data[id];
 	}
 
 
@@ -456,11 +456,11 @@ function Tree(initObj) {
 
 
 	function swapNodeID(idOld, idNew) {
-		g_data[idNew] = g_data[idOld]
-		g_data[idOld] = null
+		data[idNew] = data[idOld]
+		data[idOld] = null
 		
-		g_data[idNew].id = idNew
-		g_data[idNew].div.id = idNew	
+		data[idNew].id = idNew
+		data[idNew].div.id = idNew	
 		
 		if (idSelected == idOld)
 			idSelected = idNew
@@ -513,7 +513,7 @@ function Tree(initObj) {
 			
 			l_item.onmousedown = function(e) {
 				if (this.subs) {
-					showContext(this.subs);
+					showContext(id, this.subs);
 				}
 
 				if (this.action) {
@@ -529,7 +529,7 @@ function Tree(initObj) {
 			
 			var l_img = document.createElement("img")
 			if (p_data[i].icon)
-				l_img.src = g_strIconPath + p_data[i].icon
+				l_img.src = strIconPath + p_data[i].icon
 			else {
 				l_img.src = "images/spacer.gif"
 				l_img.width = 16
@@ -574,7 +574,7 @@ function Tree(initObj) {
 			if (typeof initObj.onRename == "function") {
 				idEditing = id;
 				
-				var l_div = g_data[idEditing].divName;
+				var l_div = data[idEditing].divName;
 				l_div.contentEditable = true;
 				l_div.className = "nodeNameEdit";
 				l_div.focus();
@@ -587,7 +587,7 @@ function Tree(initObj) {
 
 	function editNodeNameChange() {
 		if (idEditing) {
-			var l_data = g_data[idEditing]
+			var l_data = data[idEditing]
 			
 			l_data.divName.contentEditable = false
 			
@@ -658,13 +658,13 @@ function Tree(initObj) {
 			divDragging.style.position = "relative"
 			
 			if (divDropTarget) {
-				var l_div = g_data[divDragging.id]
-				var l_divParent = g_data[l_div.parentID]
+				var l_div = data[divDragging.id]
+				var l_divParent = data[l_div.parentID]
 				
-				var l_target = g_data[divDropTarget.id]
+				var l_target = data[divDropTarget.id]
 				
 				if (boolBefore) {
-					var l_targetParent = g_data[l_target.parentID]
+					var l_targetParent = data[l_target.parentID]
 					
 					if ((l_targetParent) && (l_divParent)) {
 						initObj.onDropBefore(divDragging.id, divDropTarget.id);
@@ -733,14 +733,14 @@ function Tree(initObj) {
 			if (p_div != divDropTarget) {
 				var l_data
 				if (divDropTarget) {
-					l_data = g_data[divDropTarget.id]
+					l_data = data[divDropTarget.id]
 					l_data.divDrop.className = "dropOff"
 				}
 				
 				divDropTarget = p_div
 				
 				if (divDropTarget) {
-					l_data = g_data[divDropTarget.id]
+					l_data = data[divDropTarget.id]
 					if (document.getElementById(l_data.parentID))
 						// not root node
 						l_data.divDrop.className = "dropOver"
@@ -760,13 +760,13 @@ function Tree(initObj) {
 	//
 
 	function getNextNode(id) {
-		if (g_data[id]) {
+		if (data[id]) {
 			var l_children
-			var l_parent = g_data[g_data[id].parentID]
+			var l_parent = data[data[id].parentID]
 			if (l_parent) {
 				l_children = l_parent.divChildren.childNodes
 			} else {
-				l_children = g_divTree.childNodes
+				l_children = divTree.childNodes
 			}
 			
 			var l_found = false
@@ -782,13 +782,13 @@ function Tree(initObj) {
 	}
 
 	function getPreviousNode(id) {
-		if (g_data[id]) {
+		if (data[id]) {
 			var l_children
-			var l_parent = g_data[g_data[id].parentID]
+			var l_parent = data[data[id].parentID]
 			if (l_parent) {
 				l_children = l_parent.divChildren.childNodes
 			} else
-				l_children = g_divTree.childNodes
+				l_children = divTree.childNodes
 				
 			var l_found = false
 			for (var i=l_children.length;i>0;i--) {
@@ -805,7 +805,7 @@ function Tree(initObj) {
 
 
 	function getNextVisible(id) {
-		var l_data = g_data[id]
+		var l_data = data[id]
 		
 		if (l_data.expanded) {
 			return l_data.divChildren.childNodes[0].id
@@ -823,9 +823,9 @@ function Tree(initObj) {
 		if (l_next)
 			return l_next
 
-		if (g_data[id])
-			if (g_data[id].parentID)
-				return findNextParent(g_data[id].parentID)
+		if (data[id])
+			if (data[id].parentID)
+				return findNextParent(data[id].parentID)
 		
 		return null
 	}
@@ -838,16 +838,16 @@ function Tree(initObj) {
 			return findLastChild (l_previous)
 		}
 		
-		if (g_data[id])
-			if (g_data[id].parentID)
-				return g_data[id].parentID
+		if (data[id])
+			if (data[id].parentID)
+				return data[id].parentID
 		
 		return null
 	}
 
 	function findLastChild(id) {
-		if (g_data[id].expanded) {
-			var l_arrChildren = g_data[id].divChildren.childNodes
+		if (data[id].expanded) {
+			var l_arrChildren = data[id].divChildren.childNodes
 			return findLastChild(l_arrChildren[l_arrChildren.length - 1].id)
 		} else
 			return id

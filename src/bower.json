@@ -1,11 +1,9 @@
 {
-	"name": "fresher",
-	"version": "1.0.0",
-	"dependencies": {
-		"bootstrap": "latest",
-		"font-awesome": "latest",
-		"animate.css": "latest",
-		"angular": "latest",
-		"angular-route": "latest"	
-	}
+  "name": "fresher",
+  "version": "1.0.0",
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "underscore": "~1.7.0",
+    "jquery": "~2.1.3"
+  }
 }
