@@ -16,6 +16,7 @@ app.use(require("body-parser").json());
 require('models/publication')(mongoose);
 require('models/page')(mongoose);
 require('models/config')(mongoose);
+require('models/structure')(mongoose);
 
 // REST to mongodb (using mongoose models)
 app.use('/rest', require('mers')({mongoose:mongoose}).rest());

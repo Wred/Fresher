@@ -19,27 +19,8 @@ window.onload = function () {
 				domID:"tree",
 				// load first publication for now
 				rootID:publications.at(0).get("rootPage"),
-				onLoad:function (id, cb) {
-					// AM: NOTE: Backbone:
-					// ouch.  This is awful.
-					// If I don't have it, just get it from the server.
-					// and make this call async...
-					var page = pages.get(id);
-
-					if (page) {
-						cb(page.attributes);
-					} else {
-						page = new Page({_id:id});
-						page.fetch({
-							success: function (model, response, options) {
-								pages.add(model);
-								cb(model.attributes);
-							},
-							error: function (model, response, options) {
-								console.error("Couldn't load page:\n"+ response);
-							}
-						})
-					}
+				onLoad: function (id, cb) {
+					pages.getFetch(id, cb);
 				},
 				onClick:function(id) {
 					console.log("open page: "+ id);
