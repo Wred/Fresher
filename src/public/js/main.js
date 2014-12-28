@@ -5,6 +5,9 @@ var tree,
 
 window.onload = function () {
 
+	// AM: NOTE: Backbone:
+	// I'm going to load the initial data in a second call.
+	// Really don't like the idea of loading it inlined
 	publications.fetch({
 		success: function (collection, response, options) {
 
@@ -33,17 +36,12 @@ window.onload = function () {
 					console.log("moving: "+ id +"\n\tprevious:"+ target_id);
 				},
 				onRename:function(id, name) {
-					console.log("renaming: "+ id +"\n\tname: "+ escape(name));
-					$.ajax({
-						type:"PUT",
-						url:"/rest/page/" + id,
-						contentType : 'application/json',
-						dataType:"JSON",
-						data:JSON.stringify({name:name}),
-						complete:function (xhr) {
-							console.log(xhr.responseJSON.payload);
+					pages.get(id).setSave("name", name, function (err, res) {
+						if (err) {
+							return console.error(err);
 						}
-					})
+					});
+
 				},
 				onContext:function(id, cb) {
 					if (id) {

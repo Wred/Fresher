@@ -19,6 +19,21 @@ Backbone.Model.prototype.parse = function (response) {
     return response.payload;
 };
 
+Backbone.Model.prototype.setSave = function (attribute, value, cb) {
+
+    this.set(attribute, value);
+
+    var response = this.save();
+
+    if (response) {
+        cb(null, response);
+    } else {
+        cb("Couldn't save attribute: "+ attribute);
+    }
+}
+
+
+
 Backbone.Collection.prototype.parse = function (response) {
     if (response.status) {
         console.error("Error retrieving JSON from server:\n" + response);
