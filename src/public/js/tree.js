@@ -2,7 +2,7 @@ function Tree(initObj) {
 	var idSelected = null;
 	var idFocus = null;
 	var idEditing = null;
-	var divTree = initObj.div;
+	var divTree = document.getElementById(initObj.domID);
 	var data = {};
 	var strIconPath;
 
