@@ -3,7 +3,8 @@ module.exports = function (mongoose) {
 		'Page',
 		new mongoose.Schema({
 			name: String,
-			subs: [mongoose.Schema.Types.ObjectId]
+			image: String,
+			children: [mongoose.Schema.Types.ObjectId]
 		})
 	);
 };
