@@ -7,7 +7,10 @@ function Tree(config) {
 		data = {};
 
 	// load root node
-	loadNode(config.rootID);
+	loadNode(config.rootID, function (err) {
+		if (err)
+			console.error("Couldn't load root node");
+	});
 
 	document.onselectstart = function (e) {
 		return checkEdit();
@@ -105,28 +108,21 @@ function Tree(config) {
 
 
 
-	function loadNode(id) {
-		config.onLoad(id, readNodeData);
+	function loadNode(id, cb) {
+		// async function
+		config.onLoad(id, function (err, payload) {
+			if (err)
+				cb(err);
+			
+			readNodeData(payload);
+			cb(null);
+		});
 	}
 
 
 
 	function readNodeData(p_data) {	
-		var l_dataFirstNode = null;
-
-		if (l_dataFirstNode == null)
-			l_dataFirstNode = p_data._id;
-		
 		createNode(p_data._id, p_data);
-		
-		// bit of a hack...
-		if (l_dataFirstNode) {
-			expandNode(l_dataFirstNode, true);
-			// and now load the page
-			selectNode(l_dataFirstNode);
-		} else {
-			alert ("No data returned");
-		}
 	}
 
 	function createNode(id, p_data) {
@@ -382,25 +378,38 @@ function Tree(config) {
 	}
 
 
-	function expandNode (id, shouldLoad) {
+	function expandNode (id, expand) {
 		var l_data = data[id];
-		
-		if (l_data.loaded) {
-			if (l_data.divChildren.childNodes.length) {
-				l_data.expanded = p_bool;
-				expandNodeRecurse(id, p_bool);
-			} else {
-				l_data.plus.innerHTML = "&nbsp;";
-			}
-		} else {
-			if (shouldLoad && (l_data.children.length)) {
-				// load data
+
+		if (l_data.children.length) {
+			if (!l_data.expanded) {
+				// load children
 				l_data.divChildren.className = "childNodes";
 				l_data.plus.innerHTML = "O";
-				
-				for (var i=0;i<l_data.children.length;i++) {
-					loadNode(l_data.children[i]);
-				}
+
+				// make sure all the children are loaded
+				async.each(l_data.children,
+					function (child, cb) {
+						if (data[child])
+							// already loaded
+							return cb();
+
+						// let's load it
+						loadNode(child, cb);
+					},
+					function (err) {
+						if (err)
+							return console.error(err);
+
+						// all done
+						l_data.expanded = true;
+						l_data.plus.innerHTML = "-";
+					});
+			} else {
+				// collapse
+				l_data.expanded = false;
+				l_data.divChildren.className = "childNodesHidden";
+				l_data.plus.innerHTML = "+";
 			}
 		}
 	}
@@ -810,7 +819,7 @@ function Tree(config) {
 		var l_data = data[id];
 		
 		if (l_data.expanded) {
-			return l_data.divChildren.childNodes[0].id;
+			return l_data.children[0];
 		}
 		
 		var l_next = getNextNode(id);
