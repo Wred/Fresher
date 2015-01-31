@@ -10,6 +10,9 @@ function Tree(config) {
 	loadNode(config.rootID, function (err) {
 		if (err)
 			console.error("Couldn't load root node");
+
+		focusNode(config.rootID);
+		selectNode(config.rootID);
 	});
 
 	document.onselectstart = function (e) {
@@ -363,7 +366,6 @@ function Tree(config) {
 			// call click function
 			config.onClick(idSelected);
 		}
-		
 	}
 
 	function focusNode (id) {
