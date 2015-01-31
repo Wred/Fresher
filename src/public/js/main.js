@@ -17,16 +17,16 @@ window.onload = function () {
 					{
 						name:"New Page",
 						image:"page.gif",
-						subs:[]
+						children:[]
 					},
 					{
 						wait: true, // only add once we get a response
 						success:function (model, resp, options) {
-							// now we can add the _id of the new page to the parent's subs
+							// now we can add the _id of the new page to the parent's children
 							var parent = pages.get(id);
-							var subs = parent.get("subs");
-							subs.push(model.id);
-							parent.setSave("subs", subs, function (err, response) {
+							var children = parent.get("children");
+							children.push(model.id);
+							parent.setSave("children", children, function (err, response) {
 								if (err)
 									return console.error(err);
 

@@ -166,6 +166,9 @@ function Tree(config) {
 			
 			l_data.expanded = false;
 			
+			// too lazy to fix this so we'll store parent id
+			l_data.parentID = findParent(id);
+
 			// show div
 			// does parent exist?
 			if (document.getElementById(l_data.parentID)) {
@@ -261,7 +264,7 @@ function Tree(config) {
 			l_plus.idNode = id;
 			
 			l_plus.className = "expand";
-			if (l_data.subs.length) {
+			if (l_data.children.length) {
 				// add interactivity
 				l_plus.onmousedown = function(e) {
 					expandNode(this.idNode, !data[this.idNode].expanded);
@@ -270,7 +273,7 @@ function Tree(config) {
 					return false;
 				}
 				
-				if (l_data.subs.length == 0)
+				if (l_data.children.length == 0)
 					// hide children for now
 					l_plus.innerHTML = "&nbsp;";
 				else
@@ -385,13 +388,13 @@ function Tree(config) {
 				l_data.plus.innerHTML = "&nbsp;";
 			}
 		} else {
-			if (shouldLoad && (l_data.subs.length)) {
+			if (shouldLoad && (l_data.children.length)) {
 				// load data
 				l_data.divChildren.className = "childNodes";
 				l_data.plus.innerHTML = "O";
 				
-				for (var i=0;i<l_data.subs.length;i++) {
-					loadNode(l_data.subs[i]);
+				for (var i=0;i<l_data.children.length;i++) {
+					loadNode(l_data.children[i]);
 				}
 			}
 		}
@@ -485,7 +488,7 @@ function Tree(config) {
 			l_item = document.createElement("div");
 			g_divContext.appendChild(l_item);
 			
-			l_item.subs = p_data[i].subs;
+			l_item.children = p_data[i].children;
 			l_item.action = p_data[i].action;
 			
 			if (p_data[i].inline) // for icon lists etc
@@ -504,8 +507,8 @@ function Tree(config) {
 			}
 			
 			l_item.onmousedown = function(e) {
-				if (this.subs) {
-					showContext(id, this.subs);
+				if (this.children) {
+					showContext(id, this.children);
 				}
 
 				if (this.action) {
@@ -850,13 +853,16 @@ function Tree(config) {
 	}
 
 
-// 	function findParent(id) {
-// 		var index;
-// 		for (var node in data) {
-// 			index = _.indexOf(data.)
-			
-// 		}
-// 	}
+	function findParent(childID) {
+		// should only be used rarely (long)
+		for (var id in data) {
+			if (_.indexOf(data[id].children, childID) > -1) {
+				return id;
+			}
+		}
+		// no parent found
+		return null;
+	}
 
 
 
