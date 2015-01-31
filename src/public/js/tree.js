@@ -383,8 +383,8 @@ function Tree(config) {
 	function expandNode (id, expand) {
 		var l_data = data[id];
 
-		if (l_data.children.length) {
-			if (!l_data.expanded) {
+		if (expand) {
+			if (!l_data.expanded && l_data.children.length) {
 				// load children
 				l_data.divChildren.className = "childNodes";
 				l_data.plus.innerHTML = "O";
@@ -407,11 +407,17 @@ function Tree(config) {
 						l_data.expanded = true;
 						l_data.plus.innerHTML = "-";
 					});
-			} else {
-				// collapse
+			}
+		}  else {
+			// collapse
+			if (l_data.expanded) {
 				l_data.expanded = false;
 				l_data.divChildren.className = "childNodesHidden";
 				l_data.plus.innerHTML = "+";
+			} else {
+				// already collpased.  We'll collapse parent
+				expandNode(l_data.parentID, false);
+				focusNode(l_data.parentID);
 			}
 		}
 	}
