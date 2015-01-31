@@ -95,7 +95,7 @@ window.onload = function () {
 						return cb (null, l_return);
 					}
 
-					return cb(null, null);
+					return cb(null, []);
 				}
 			});
 

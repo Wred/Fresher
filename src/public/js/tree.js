@@ -20,7 +20,12 @@ function Tree(config) {
 	document.oncontextmenu = function(e) {
 		if (typeof config.onContext == "function") {
 			config.onContext(null, function (err, data) {
-				data.push({name:'Refresh',action:function(id) {location.reload()}});
+				data.push({
+					name:'Refresh',
+					action:function(id) {
+						location.reload();
+					}
+				});
 				
 				// show our context menu
 				showContext(null, data);
@@ -488,7 +493,7 @@ function Tree(config) {
 			l_item = document.createElement("div");
 			g_divContext.appendChild(l_item);
 			
-			l_item.children = p_data[i].children;
+			l_item.subs = p_data[i].subs;
 			l_item.action = p_data[i].action;
 			
 			if (p_data[i].inline) // for icon lists etc
@@ -507,8 +512,8 @@ function Tree(config) {
 			}
 			
 			l_item.onmousedown = function(e) {
-				if (this.children) {
-					showContext(id, this.children);
+				if (this.subs) {
+					showContext(id, this.subs);
 				}
 
 				if (this.action) {
