@@ -4,15 +4,10 @@ function Tree(config) {
 		idFocus = null,
 		idEditing = null,
 		divTree = document.getElementById(config.domID),
-		data = {},
-		strIconPath;
+		data = {};
 
-	initTree(config.rootID, 'images/icons/');
-
-	function initTree(id, p_strIconPath) {
-		strIconPath = p_strIconPath;
-		loadNode(id);
-	}
+	// load root node
+	loadNode(config.rootID);
 
 	document.onselectstart = function (e) {
 		return checkEdit();
@@ -21,7 +16,6 @@ function Tree(config) {
 	document.onmousedown = function (e) {
 		return checkEdit();
 	};
-
 
 	document.oncontextmenu = function(e) {
 		if (typeof config.onContext == "function") {
@@ -154,7 +148,7 @@ function Tree(config) {
 			l_data.divName.innerHTML = l_data.name;
 			
 			// udpate image
-			l_data.img.setAttribute("src", strIconPath + l_data.image);
+			l_data.img.setAttribute("src", config.iconPath + l_data.image);
 
 			// should check to see if we have proper parent...
 			
@@ -291,7 +285,7 @@ function Tree(config) {
 			l_divNode.appendChild(l_img);
 			l_data.img = l_img;
 			
-			l_img.setAttribute("src", strIconPath + l_data.image);
+			l_img.setAttribute("src", config.iconPath + l_data.image);
 			l_img.className = "nodeImage";
 			
 			
@@ -527,7 +521,7 @@ function Tree(config) {
 			
 			var l_img = document.createElement("img");
 			if (p_data[i].icon)
-				l_img.src = strIconPath + p_data[i].icon;
+				l_img.src = config.iconPath + p_data[i].icon;
 			else {
 				l_img.src = "images/spacer.gif";
 				l_img.width = 16;
@@ -856,6 +850,16 @@ function Tree(config) {
 	}
 
 
+// 	function findParent(id) {
+// 		var index;
+// 		for (var node in data) {
+// 			index = _.indexOf(data.)
+			
+// 		}
+// 	}
+
+
+
 
 
 
@@ -872,6 +876,7 @@ function Tree(config) {
 
 	return {
 		loadNode:loadNode,
+		readNodeData:readNodeData,
 		renameNode:editNodeName,
 		deleteNode:deleteNode
 	}

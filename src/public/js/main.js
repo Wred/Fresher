@@ -12,16 +12,40 @@ window.onload = function () {
 		success: function (collection, response, options) {
 
 			function contextNew(id, p_struct) {	
-				console.log("New page of type: "+ p_struct);
-				// top.fTool.call('processCB.asp', "Creating page...", {c:"PAGENEW", p:g_data[id].pageID, s:p_struct}, function (p_id) {
-				// 	loadNode("contenttreedata.asp?p=" + id);
-				// })
+				// create page and save it on server
+				var page = pages.create(
+					{
+						name:"New Page",
+						image:"page.gif",
+						subs:[]
+					},
+					{
+						wait: true, // only add once we get a response
+						success:function (model, resp, options) {
+							// now we can add the _id of the new page to the parent's subs
+							var parent = pages.get(id);
+							var subs = parent.get("subs");
+							subs.push(model.id);
+							parent.setSave("subs", subs, function (err, response) {
+								if (err)
+									return console.error(err);
+
+								// reload parent
+								tree.readNodeData(_.clone(parent.attributes));
+							});
+						},
+						error:function (model, resp, options) {
+							console.error("Couldn't create new page");
+							console.error(resp);
+						}
+					});
 			}
 
 			tree = Tree({
 				domID:"tree",
 				// load first publication for now
 				rootID:publications.at(0).get("rootPage"),
+				iconPath: "images/icons/",
 				onLoad: function (id, cb) {
 					pages.getFetch(id, cb);
 				},

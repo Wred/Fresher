@@ -1,0 +1,1 @@
+mongo fresher init.js

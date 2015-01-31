@@ -1,6 +1,11 @@
 var Page = Backbone.Model.extend({
     url: function () {
-        return "/rest/page/" + this.get("_id");
+        var _id = this.get("_id");
+        if (_id) {
+            return "/rest/page/" + _id;
+        } else {
+            return "/rest/page";
+        }
     }
 });
 
