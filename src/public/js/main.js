@@ -13,7 +13,7 @@ window.onload = function () {
 
 			function contextNew(id, p_struct) {	
 				// create page and save it on server
-				var page = pages.create(
+				pages.create(
 					{
 						name:"New Page",
 						image:"page.gif",

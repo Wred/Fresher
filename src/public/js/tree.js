@@ -73,9 +73,11 @@ function Tree(config) {
 				
 			case 40: // DOWN
 				if (!editNodeNameChange()) {
-					l_id = getNextVisible(idFocus);
-					if (l_id)
-						focusNode(l_id);
+					if (idFocus) {
+						l_id = getNextVisible(idFocus);
+						if (l_id)
+							focusNode(l_id);
+					}
 				}
 				return false;
 				
@@ -102,7 +104,7 @@ function Tree(config) {
 				return false;
 				
 	//		default:
-	//			alert (keyCode)
+	//			console.log(keyCode);
 		}
 	}
 
@@ -174,7 +176,7 @@ function Tree(config) {
 			// does parent exist?
 			if (document.getElementById(l_data.parentID)) {
 				// must be child node
-				data[l_data.parentID].divChildren.appendChild(l_data.div);
+				addChild(id);
 			} else {
 				// must be root node
 				divTree.appendChild(l_div);
@@ -414,34 +416,6 @@ function Tree(config) {
 		}
 	}
 
-	function expandNodeRecurse (id, p_bool) {
-		var l_data = data[id];
-		
-		if (!l_data.loaded)
-			return;
-			
-		var l_recurse = true;
-		var l_numChildren = l_data.divChildren.childNodes.length;
-		
-		if (p_bool) {
-			if (l_data.expanded) {
-				l_data.divChildren.className = "childNodes";
-				l_data.plus.innerHTML = "-";
-			} else {
-				l_recurse = false;
-			}
-		} else {
-			if (l_numChildren) {
-				l_data.divChildren.className = "childNodesHidden";
-				l_data.plus.innerHTML = "+";
-			}
-		}
-		
-		if (l_recurse)
-			for (var i=0;i<l_numChildren;i++)
-				expandNodeRecurse(l_data.divChildren.childNodes[i].id, p_bool);
-
-	}
 
 
 	function deleteNode(id) {
@@ -879,6 +853,26 @@ function Tree(config) {
 	}
 
 
+	function addChild(childID) {
+		// adds child to parent in proper order
+		var child = data[childID],
+			parent = data[child.parentID],
+			index = _.indexOf(parent.children, childID),
+			nextSibling;
+
+		while (index < parent.children.length) {
+			index++;
+			nextSibling = document.getElementById(parent.children[index]);
+			if (nextSibling) {
+				// found the next sibling
+				parent.divChildren.insertBefore(child.div, nextSibling);
+				return;
+			}
+		}
+
+		// if we made it this far, we're last
+		parent.divChildren.appendChild(child.div);
+	}
 
 
 
