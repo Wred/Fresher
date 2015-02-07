@@ -6,11 +6,13 @@ function Tree(config) {
 		divTree = document.getElementById(config.domID),
 		data = {};
 
+
 	// load root node
 	loadNode(config.rootID, function (err) {
 		if (err)
 			console.error("Couldn't load root node");
 
+		expandNode(config.rootID, true);
 		focusNode(config.rootID);
 		selectNode(config.rootID);
 	});
@@ -105,9 +107,18 @@ function Tree(config) {
 					selectNode(idFocus);
 				}
 				return false;
-				
-	//		default:
-	//			console.log(keyCode);
+
+			case 27:  // escape
+				if (idEditing) {
+					// reset name change
+					data[idEditing].divName.innerHTML = data[idEditing].name;
+					editNodeNameChange();
+					return true;
+				}
+				return false;
+
+			default:
+				console.log(keyCode);
 		}
 	}
 
@@ -115,20 +126,15 @@ function Tree(config) {
 
 	function loadNode(id, cb) {
 		// async function
-		config.onLoad(id, function (err, payload) {
+		config.onLoad(id, function (err, data) {
 			if (err)
 				cb(err);
 			
-			readNodeData(payload);
+			createNode(id, data);
 			cb(null);
 		});
 	}
 
-
-
-	function readNodeData(p_data) {	
-		createNode(p_data._id, p_data);
-	}
 
 	function createNode(id, p_data) {
 		
@@ -145,18 +151,28 @@ function Tree(config) {
 		// copy p_data into l_data
 		for (var l_prop in p_data)
 			l_data[l_prop] = p_data[l_prop];
-		
+
+
 		if (l_data.div) {
 			// node already exists
-	//		l_data.div.parentNode.removeChild(l_data.div)
-			
 			// update name
 			l_data.divName.innerHTML = l_data.name;
 			
 			// udpate image
 			l_data.img.setAttribute("src", config.iconPath + l_data.image);
 
-			// should check to see if we have proper parent...
+
+			// has parent changed?
+			var parentID = findParent(id);
+
+			if (parentID != l_data.parentID) {
+				// reparent
+				l_data.parentID = parentID;
+				// remove from parent
+				l_data.div.parentNode.removeChild(l_data.div);
+				// add child to parentID
+				addChild(id);
+			}
 			
 		} else {
 			// create new div
@@ -169,21 +185,13 @@ function Tree(config) {
 			// store main div
 			l_data.div = l_div;
 			
-			
 			l_data.expanded = false;
 			
-			// too lazy to fix this so we'll store parent id
+			// cache parent
 			l_data.parentID = findParent(id);
 
-			// show div
-			// does parent exist?
-			if (document.getElementById(l_data.parentID)) {
-				// must be child node
-				addChild(id);
-			} else {
-				// must be root node
-				divTree.appendChild(l_div);
-			}
+			// add div
+			addChild(id);
 			
 			// add drop target response (when draggin another div)
 			l_div.onmouseover = function(e) {
@@ -198,9 +206,7 @@ function Tree(config) {
 			
 			
 			// create elements
-			
 			// div for drop target before current node
-			
 			var l_divDrop = document.createElement("div");
 			l_div.appendChild(l_divDrop);
 			l_data.divDrop = l_divDrop;
@@ -283,7 +289,7 @@ function Tree(config) {
 					// hide children for now
 					l_plus.innerHTML = "&nbsp;";
 				else
-					l_plus.innerHTML = "<em>+</em>";
+					l_plus.innerHTML = "+";
 			}
 			else
 				// shouldn't respond
@@ -328,20 +334,13 @@ function Tree(config) {
 			}
 			*/
 			
-			
 			// children div
 			var l_divChildren = document.createElement("div");
 			l_div.appendChild(l_divChildren);
 			l_data.divChildren = l_divChildren;
 			
 			l_divChildren.className = "childNodesHidden";
-			
-			// select this one if no node is selected
-	//		if (idSelected == null)
-	//			selectNode(id)
 		}
-		
-		
 	}
 
 	function selectNode (id) {
@@ -647,36 +646,43 @@ function Tree(config) {
 			divDragging.style.position = "relative";
 			
 			if (divDropTarget) {
-				var l_div = data[divDragging.id];
-				var l_divParent = data[l_div.parentID];
-				
-				var l_target = data[divDropTarget.id];
+				var l_node = data[divDragging.id],
+					l_nodeOldParent = data[l_node.parentID],
+					l_target = data[divDropTarget.id],
+					l_targetParent = data[l_target.parentID];
 				
 				if (boolBefore) {
-					var l_targetParent = data[l_target.parentID];
-					
-					if ((l_targetParent) && (l_divParent)) {
-						config.onDropBefore(divDragging.id, divDropTarget.id);
-						//eval(l_div.dropBefore +"('"+ l_div.id +"','"+ l_target.id +"')")
+					if (l_targetParent && l_nodeOldParent) {
+						config.onDropBefore(divDragging.id, divDropTarget.id, l_node.parentID);
 
-						l_divParent.divChildren.removeChild(l_div.div);
-						l_targetParent.divChildren.insertBefore(l_div.div, l_target.div);
-						
-						l_div.parentID = l_targetParent.id;
+						// remove node from old parent's children
+						l_nodeOldParent.divChildren.removeChild(l_node.div);
+						l_nodeOldParent.children = _.without(l_nodeOldParent.children, divDragging.id);
+
+						// add it to new parent at proper index
+						l_targetParent.divChildren.insertBefore(l_node.div, l_target.div);
+						l_targetParent.children.splice(_.indexOf(l_targetParent.children, divDropTarget.id), 0, divDragging.id);
+
+						// update node's parent id
+						l_node.parentID = l_targetParent.id;
 					}
 				}
 				else {
-					if (l_divParent) {
-						config.onDrop(divDragging.id, divDropTarget.id);
-						
-						//eval(l_div.dropOn +"('"+ l_div.id +"','"+ l_target.id +"')")
+					if (l_targetParent) {
+						config.onDrop(divDragging.id, divDropTarget.id, l_node.parentID);
 
-						l_divParent.divChildren.removeChild(l_div.div);
-						l_target.divChildren.appendChild(l_div.div);
+						// remove node from old parent's children
+						l_nodeOldParent.divChildren.removeChild(l_node.div);
+						l_nodeOldParent.children = _.without(l_nodeOldParent.children, divDragging.id);
+
+						// append it to new parent's children
+						l_target.divChildren.appendChild(l_node.div);
+						l_target.children.push(divDragging.id);
 						
-						l_div.parentID = l_target.id;
-						
-						expandNode(l_div.parentID, true);
+						// update node parent id
+						l_node.parentID = l_target.id;
+
+						expandNode(l_node.parentID, true);
 					}
 				}
 				setDropTarget(null, false);
@@ -852,7 +858,7 @@ function Tree(config) {
 	function findParent(childID) {
 		// should only be used rarely (long)
 		for (var id in data) {
-			if (_.indexOf(data[id].children, childID) > -1) {
+			if (_.contains(data[id].children, childID)) {
 				return id;
 			}
 		}
@@ -863,23 +869,30 @@ function Tree(config) {
 
 	function addChild(childID) {
 		// adds child to parent in proper order
-		var child = data[childID],
-			parent = data[child.parentID],
-			index = _.indexOf(parent.children, childID),
-			nextSibling;
+		var child = data[childID];
 
-		while (index < parent.children.length) {
-			index++;
-			nextSibling = document.getElementById(parent.children[index]);
-			if (nextSibling) {
-				// found the next sibling
-				parent.divChildren.insertBefore(child.div, nextSibling);
-				return;
+		// make sure we aren't root node
+		if (child.parentID) {
+			var parent = data[child.parentID],
+				index = _.indexOf(parent.children, childID),
+				nextSibling;
+
+			while (index < parent.children.length) {
+				index++;
+				nextSibling = document.getElementById(parent.children[index]);
+				if (nextSibling) {
+					// found the next sibling
+					parent.divChildren.insertBefore(child.div, nextSibling);
+					return;
+				}
 			}
-		}
 
-		// if we made it this far, we're last
-		parent.divChildren.appendChild(child.div);
+			// if we made it this far, we're last (or first)
+			parent.divChildren.appendChild(child.div);
+		} else {
+			// root node
+			divTree.appendChild(child.div);
+		}
 	}
 
 
@@ -898,7 +911,7 @@ function Tree(config) {
 
 	return {
 		loadNode:loadNode,
-		readNodeData:readNodeData,
+		createNode:createNode,
 		renameNode:editNodeName,
 		deleteNode:deleteNode
 	}

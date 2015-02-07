@@ -10,7 +10,7 @@ Backbone.Model.prototype.parse = function (response) {
     }
 
     if (response.status) {
-        console.error("Error retrieving JSON from server:\n" + response);
+        console.error("Error retrieving JSON from server:\n\t" + response.error);
         // AM: NOTE: Backbone:
         // should have a way to handle the error here...
         return null;

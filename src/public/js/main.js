@@ -30,8 +30,11 @@ window.onload = function () {
 								if (err)
 									return console.error(err);
 
-								// reload parent
-								tree.readNodeData(_.clone(parent.attributes));
+								// update parent (to update children)
+								tree.createNode(parent.id, _.clone(parent.attributes));
+
+								// add node
+								tree.createNode(model.id, _.clone(model.attributes));
 							});
 						},
 						error:function (model, resp, options) {
@@ -52,12 +55,72 @@ window.onload = function () {
 				onClick:function(id) {
 					console.log("open page: "+ id);
 				},
-				onDrop:function(id,target_id) {
-					// new parent
-					console.log("reparenting: "+ id +"\n\tparent: "+ target_id); 
+				onDrop:function(id, target_id, old_parent_id) {
+
+					return;
+					
+					var parent = pages.get(target_id),
+						oldParent = pages.get(old_parent_id);
+
+					// remove from old parent
+					oldParent.set("children", _.without(oldParent.get("children"), id));
+
+					// add it to new parent
+					var children = parent.get("children");
+					children.push(id);
+					parent.set("children", children);
+
+					pages.sync("update", pages, {
+						success: function () {
+
+						},
+						error: function () {
+							
+						}
+					});
 				},
-				onDropBefore:function(id, target_id) {
+				onDropBefore:function(id, target_id, old_parent_id) {
 					console.log("moving: "+ id +"\n\tprevious:"+ target_id);
+
+					return;
+
+					var oldParent = pages.get(old_parent_id);
+						
+					// remove from old parent
+					oldParent.set("children", _.without(oldParent.get("children"), id));
+
+					// add it to new parent
+					// first find the parent
+					var newParents = pages.filter(function (page) {
+						return _.contains(page.get("children"), target_id);
+					});
+
+					// there should only be one new parent..
+					if (newParents.length == 0) {
+						console.error("No parent found for target.");
+						// can't continue
+						return;
+					}
+
+					if (newParents.length > 1) {
+						console.error("Multiple parents found for target.");
+					}
+
+					var newParent = newParents[0],
+						children = newParent.get("children");
+
+					children.splice(_.indexOf(children, target_id), 0, id);
+					newParent.set("children", children);
+
+
+					pages.sync("update", pages, {
+						success: function () {
+
+						},
+						error: function () {
+							
+						}
+					});
 				},
 				onRename:function(id, name) {
 					pages.get(id).setSave("name", name, function (err, res) {
@@ -65,7 +128,6 @@ window.onload = function () {
 							return console.error(err);
 						}
 					});
-
 				},
 				onContext:function(id, cb) {
 					if (id) {
