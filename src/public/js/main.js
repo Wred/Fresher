@@ -55,7 +55,7 @@ window.onload = function () {
 				onClick:function(id) {
 					console.log("open page: "+ id);
 				},
-				onDrop:function(id, target_id, old_parent_id) {
+				onDrop:function(id, target_id, old_parent_id, cb) {
 					var parent = pages.get(target_id),
 						oldParent = pages.get(old_parent_id);
 
@@ -63,7 +63,7 @@ window.onload = function () {
 					oldParent
 						.cbSave({children:_.without(oldParent.get("children"), id)}, function (err) {
 							if (err)
-								return console.error("Failed to save old parent: "+ textStatus);
+								return cb("Failed to save old parent: "+ err);
 
 							// now add node to new parent
 							var children = parent.get("children");
@@ -72,13 +72,14 @@ window.onload = function () {
 							parent
 								.cbSave({children: children}, function (err) {
 									if (err)
-										return console.error("Failed to save old parent.");
+										return cb("Failed to save old parent:"+ err);
 
-									console.log("Successfully moved page.");
+									// success - update tree
+									cb();
 								});
 						});
 				},
-				onDropBefore:function(id, target_id, old_parent_id) {
+				onDropBefore:function(id, target_id, old_parent_id, cb) {
 					console.log("moving: "+ id +"\n\tprevious:"+ target_id);
 
 					var oldParent = pages.get(old_parent_id);
@@ -87,7 +88,7 @@ window.onload = function () {
 					oldParent
 						.cbSave({children:_.without(oldParent.get("children"), id)}, function (err) {
 							if (err)
-								return ("Couldn't save old parent changes");
+								return cb("Couldn't save old parent changes: "+ err);
 							
 							// add it to new parent
 							// first find the parent
@@ -114,8 +115,10 @@ window.onload = function () {
 							newParent
 								.cbSave({children:children}, function (err) {
 									if (err)
-										return console.error("Failed to save old parent: "+ err);
-									console.log("Successfully moved node");
+										return cb("Failed to save old parent: "+ err);
+
+									// success - update tree
+									cb();
 								});
 						});
 				},

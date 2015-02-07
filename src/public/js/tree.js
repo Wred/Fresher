@@ -1,7 +1,6 @@
 /*
 	Improvements:
 		- Either use DOM to store structures (children etc) or data hash.  Not both.  It's redundant
-
 */
 
 
@@ -18,7 +17,7 @@ function Tree(config) {
 	// load root node
 	loadNode(config.rootID, function (err) {
 		if (err)
-			console.error("Couldn't load root node");
+			return console.error("Couldn't load root node");
 
 		expandNode(config.rootID, true);
 		focusNode(config.rootID);
@@ -136,7 +135,7 @@ function Tree(config) {
 		// async function
 		config.onLoad(id, function (err, data) {
 			if (err)
-				cb(err);
+				return cb(err);
 			
 			createNode(id, data);
 			cb(null);
@@ -156,10 +155,15 @@ function Tree(config) {
 			data[id] = l_data;
 		}
 		
-		// copy p_data into l_data
 		for (var l_prop in p_data)
 			l_data[l_prop] = p_data[l_prop];
 
+		// copy p_data into l_data
+// 		l_data.id = id;
+// 		l_data.name = p_data.name;
+// 		l_data.image = p_data.image;
+// 		l_data.children = p_data.children;
+// 		l_data.expanded = p_data.expanded;
 
 		if (l_data.div) {
 			// node already exists
@@ -339,10 +343,17 @@ function Tree(config) {
 		}
 
 		// applies to both existing and new nodes
+		updatePlus(id);
+	}
+
+
+	function updatePlus(id) {
+		var l_data = data[id];
 
 		// set plus sign
 		l_data.plus.innerHTML = l_data.children.length ? (l_data.expanded ? "-":"+") : "&nbsp";
 	}
+
 
 	function selectNode (id) {
 		if (id == idSelected)
@@ -417,7 +428,7 @@ function Tree(config) {
 				l_data.divChildren.className = "childNodesHidden";
 				l_data.plus.innerHTML = "+";
 			} else {
-				// already collpased.  We'll collapse parent
+				// already collpased.  We'll collapse parent cause this was likely a left key press (moving up the tree)
 				expandNode(l_data.parentID, false);
 				focusNode(l_data.parentID);
 			}
@@ -437,28 +448,17 @@ function Tree(config) {
 		// remove the child
 		var l_div = data[id].div;
 		l_div.parentNode.removeChild(l_div);
+
+		var l_parentID = data[id].parentID;
 		
 		// forget the data (this should get all child objects)
 		delete data[id];
+
+		updatePlus(l_parentID);
 	}
 
 
 
-
-
-	function swapNodeID(idOld, idNew) {
-		data[idNew] = data[idOld];
-		data[idOld] = null;
-		
-		data[idNew].id = idNew;
-		data[idNew].div.id = idNew;
-		
-		if (idSelected == idOld)
-			idSelected = idNew;
-			
-		if (idFocus == idOld)
-			idFocus = idNew;
-	}
 
 
 	/////////////////////////////////////////////////////
@@ -654,36 +654,44 @@ function Tree(config) {
 				
 				if (boolBefore) {
 					if (l_targetParent && l_nodeOldParent) {
-						config.onDropBefore(divDragging.id, divDropTarget.id, l_node.parentID);
+						config.onDropBefore(l_node.id, l_target.id, l_nodeOldParent.id, function (err) {
+							if (err)
+								// problem server side.
+								return console.error(err);
 
-						// remove node from old parent's children
-						l_nodeOldParent.divChildren.removeChild(l_node.div);
-						l_nodeOldParent.children = _.without(l_nodeOldParent.children, divDragging.id);
+							// remove node from old parent's children
+							l_nodeOldParent.divChildren.removeChild(l_node.div);
+							l_nodeOldParent.children = _.without(l_nodeOldParent.children, l_node.id);
 
-						// add it to new parent at proper index
-						l_targetParent.divChildren.insertBefore(l_node.div, l_target.div);
-						l_targetParent.children.splice(_.indexOf(l_targetParent.children, divDropTarget.id), 0, divDragging.id);
+							// add it to new parent at proper index
+							l_targetParent.divChildren.insertBefore(l_node.div, l_target.div);
+							l_targetParent.children.splice(_.indexOf(l_targetParent.children, l_target.id), 0, l_node.id);
 
-						// update node's parent id
-						l_node.parentID = divDropTarget.id;
+							// update node's parent id
+							l_node.parentID = l_target.id;
+						});
 					}
 				}
 				else {
 					if (l_targetParent) {
-						config.onDrop(divDragging.id, divDropTarget.id, l_node.parentID);
+						config.onDrop(l_node.id, l_target.id, l_nodeOldParent.id, function (err) {
+							if (err)
+								// problem server side
+								return console.error(err);
 
-						// remove node from old parent's children
-						l_nodeOldParent.divChildren.removeChild(l_node.div);
-						l_nodeOldParent.children = _.without(l_nodeOldParent.children, divDragging.id);
+							// remove node from old parent's children
+							l_nodeOldParent.divChildren.removeChild(l_node.div);
+							l_nodeOldParent.children = _.without(l_nodeOldParent.children, l_node.id);
 
-						// append it to new parent's children
-						l_target.divChildren.appendChild(l_node.div);
-						l_target.children.push(divDragging.id);
-						
-						// update node parent id
-						l_node.parentID = divDropTarget.id;
+							// append it to new parent's children
+							l_target.divChildren.appendChild(l_node.div);
+							l_target.children.push(l_node.id);
 
-						expandNode(l_node.parentID, true);
+							// update node parent id
+							l_node.parentID = l_target.id;
+
+							expandNode(l_node.parentID, true);
+						});
 					}
 				}
 				setDropTarget(null, false);
@@ -698,7 +706,6 @@ function Tree(config) {
 
 		g_mouseX = evt.pageX;
 		g_mouseY = evt.pageY;
-		
 		
 		if (divDragWaiting) {
 			if (divDropTarget) {
