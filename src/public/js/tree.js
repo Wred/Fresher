@@ -117,8 +117,8 @@ function Tree(config) {
 				}
 				return false;
 
-			default:
-				console.log(keyCode);
+// 			default:
+// 				console.log(keyCode);
 		}
 	}
 

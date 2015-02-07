@@ -19,17 +19,16 @@ Backbone.Model.prototype.parse = function (response) {
     return response.payload;
 };
 
-Backbone.Model.prototype.setSave = function (attribute, value, cb) {
+Backbone.Model.prototype.cbSave = function (attributes, cb) {
 
-    this.set(attribute, value);
-
-    var response = this.save();
-
-    if (response) {
-        cb(null, response);
-    } else {
-        cb("Couldn't save attribute: "+ attribute);
-    }
+    this
+        .save(attributes, {wait:true})
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            cb(errorThrown);
+        })
+        .done(function (data, textStatus, jqXHR) {
+            cb(null, data);
+        });
 }
 
 
