@@ -19,10 +19,19 @@ Backbone.Model.prototype.parse = function (response) {
     return response.payload;
 };
 
+
+// do our own save function with a single callback
 Backbone.Model.prototype.cbSave = function (attributes, cb) {
 
-    this
-        .save(attributes, {wait:true})
+    var jqXHR = this.save(attributes, {wait:true});
+
+    if (!jqXHR) {
+        // failed validation
+        return cb("Failed validation");
+    }
+
+    // otherwise we made it
+    jqXHR
         .fail(function (jqXHR, textStatus, errorThrown) {
             cb(errorThrown);
         })
@@ -48,7 +57,6 @@ Backbone.Collection.prototype.parse = function (response) {
 // AM: NOTE: Backbone:
 // Creating my own get method that will fetch if we don't
 // already have the model and add it to the collection
-
 Backbone.Collection.prototype.getFetch = function (id, cb) {
     // AM: NOTE: Backbone:
     // If I don't have it, just get it from the server.
