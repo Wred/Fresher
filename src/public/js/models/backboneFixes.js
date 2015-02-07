@@ -65,13 +65,13 @@ Backbone.Collection.prototype.getFetch = function (id, cb) {
         _model = self.get(id);
 
     if (_model) {
-        cb(null, _model.attributes);
+        cb(null, _model);
     } else {
         _model = new self.model({_id:id});
         _model.fetch({
             success: function (model, response, options) {
                 self.add(model);
-                cb(null, model.attributes);
+                cb(null, model);
             },
             error: function (model, response, options) {
                 cb("Couldn't load page:\n"+ response);

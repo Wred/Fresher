@@ -133,21 +133,22 @@ function Tree(config) {
 
 	function loadNode(id, cb) {
 		// async function
-		config.onLoad(id, function (err, data) {
+		config.onLoad(id, function (err, name, image, children) {
 			if (err)
 				return cb(err);
 			
-			createNode(id, data);
-			cb(null);
+			createNode(id, name, image, children);
+			cb();
 		});
 	}
 
 
-	function createNode(id, p_data) {
+	function createNode(id, name, image, children) {
 		
 		var l_data;
 		
 		if (data[id]) {
+			// we already have it
 			l_data = data[id];
 		} else {
 			l_data = new Object();
@@ -155,15 +156,11 @@ function Tree(config) {
 			data[id] = l_data;
 		}
 		
-		for (var l_prop in p_data)
-			l_data[l_prop] = p_data[l_prop];
+ 		l_data.id = id;
+ 		l_data.name = name;
+ 		l_data.image = image;
+ 		l_data.children = children;
 
-		// copy p_data into l_data
-// 		l_data.id = id;
-// 		l_data.name = p_data.name;
-// 		l_data.image = p_data.image;
-// 		l_data.children = p_data.children;
-// 		l_data.expanded = p_data.expanded;
 
 		if (l_data.div) {
 			// node already exists

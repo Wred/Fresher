@@ -31,10 +31,13 @@ window.onload = function () {
 									return console.error(err);
 
 								// update parent (to update children)
-								tree.createNode(parent.id, _.clone(parent.attributes));
+								tree.createNode(parent.id, parent.get("name"), parent.get("image"), parent.get("children"));
 
 								// add node
-								tree.createNode(model.id, _.clone(model.attributes));
+								tree.createNode(model.id, model.get("name"), model.get("image"), model.get("children"));
+
+								// make sure parent is expanded
+								
 							});
 						},
 						error:function (model, resp, options) {
@@ -50,7 +53,12 @@ window.onload = function () {
 				rootID:publications.at(0).get("rootPage"),
 				iconPath: "images/icons/",
 				onLoad: function (id, cb) {
-					pages.getFetch(id, cb);
+					pages.getFetch(id, function (err, model) {
+						if (err)
+							return console.log("Couldn't load page: "+ id);
+
+						cb(null, model.get("name"), model.get("image"), model.get("children"));
+					});
 				},
 				onClick:function(id) {
 					console.log("open page: "+ id);
