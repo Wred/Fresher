@@ -1,3 +1,11 @@
+/*
+	Improvements:
+		- Either use DOM to store structures (children etc) or data hash.  Not both.  It's redundant
+
+*/
+
+
+
 function Tree(config) {
 	
 	var idSelected = null,
@@ -161,7 +169,6 @@ function Tree(config) {
 			// udpate image
 			l_data.img.setAttribute("src", config.iconPath + l_data.image);
 
-
 			// has parent changed?
 			var parentID = findParent(id);
 
@@ -173,7 +180,7 @@ function Tree(config) {
 				// add child to parentID
 				addChild(id);
 			}
-			
+
 		} else {
 			// create new div
 			var l_div = document.createElement("div");
@@ -276,24 +283,13 @@ function Tree(config) {
 			l_plus.idNode = id;
 			
 			l_plus.className = "expand";
-			if (l_data.children.length) {
-				// add interactivity
-				l_plus.onmousedown = function(e) {
-					expandNode(this.idNode, !data[this.idNode].expanded);
-					var evt=fixe(e);
-					evt.cancelBubble = true;
-					return false;
-				}
-				
-				if (l_data.children.length == 0)
-					// hide children for now
-					l_plus.innerHTML = "&nbsp;";
-				else
-					l_plus.innerHTML = "+";
+			// add interactivity
+			l_plus.onmousedown = function(e) {
+				expandNode(this.idNode, !data[this.idNode].expanded);
+				var evt=fixe(e);
+				evt.cancelBubble = true;
+				return false;
 			}
-			else
-				// shouldn't respond
-				l_plus.innerHTML = "&nbsp;";
 			
 			// node icon
 			var l_img = document.createElement("img");
@@ -341,6 +337,11 @@ function Tree(config) {
 			
 			l_divChildren.className = "childNodesHidden";
 		}
+
+		// applies to both existing and new nodes
+
+		// set plus sign
+		l_data.plus.innerHTML = l_data.children.length ? (l_data.expanded ? "-":"+") : "&nbsp";
 	}
 
 	function selectNode (id) {
@@ -664,7 +665,7 @@ function Tree(config) {
 						l_targetParent.children.splice(_.indexOf(l_targetParent.children, divDropTarget.id), 0, divDragging.id);
 
 						// update node's parent id
-						l_node.parentID = l_targetParent.id;
+						l_node.parentID = divDropTarget.id;
 					}
 				}
 				else {
@@ -680,7 +681,7 @@ function Tree(config) {
 						l_target.children.push(divDragging.id);
 						
 						// update node parent id
-						l_node.parentID = l_target.id;
+						l_node.parentID = divDropTarget.id;
 
 						expandNode(l_node.parentID, true);
 					}
