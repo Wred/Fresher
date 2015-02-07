@@ -26,12 +26,14 @@ window.onload = function () {
 
 function loadContentTree(rootPageID) {
 			
-	function contextNew(id, p_struct) {	
+	function contextNew(id, idStruct) {	
+		var structure = structures.get(idStruct);
+		
 		// create page and save it on server
 		pages.create(
 			{
-				name:"New Page",
-				image:"page.gif",
+				name:structure.get("name"),
+				image:structure.get("image"),
 				children:[]
 			},
 			{
@@ -154,6 +156,11 @@ function loadContentTree(rootPageID) {
 		},
 		onContext:function(id, cb) {
 			if (id) {
+				// add structures to new context menu
+				var subs = structures.map(function (structure) {
+					return {name:structure.get("name"), icon:structure.get("image"), action: function (id) {contextNew(id, structure.id)}};
+				});
+
 				var l_return = [
 					{name:'Rename', action:function (id) {
 						tree.renameNode(id);
@@ -164,10 +171,7 @@ function loadContentTree(rootPageID) {
 					{name:'Publish', action:function (id) {
 						console.log("Publish page: "+ id);
 					}},
-					{name:'New...', subs:[
-						{name:'Home',icon:'icon_home.gif',action:function (id) {contextNew(id, 1)}}
-						]
-					},
+					{name:'New...', subs:subs},
 					{name:'Delete',action:function (id) {
 						console.log("Delete page: "+ id);
 						tree.deleteNode(id);
