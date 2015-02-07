@@ -79,3 +79,16 @@ Backbone.Collection.prototype.getFetch = function (id, cb) {
         })
     }
 };
+
+
+
+Backbone.Collection.prototype.cbFetch = function (cb) {
+	this.fetch({
+		error: function (collection, response, options) {
+		    cb(response);
+		},		
+		success: function (collection, response, options) {
+		    cb(null, collection);
+		}
+	});    
+}
