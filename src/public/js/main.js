@@ -25,7 +25,7 @@ window.onload = function () {
 
 
 function loadContentTree(rootPageID) {
-			
+	
 	function contextNew(id, idStruct) {	
 		var structure = structures.get(idStruct);
 		
@@ -54,7 +54,8 @@ function loadContentTree(rootPageID) {
 						tree.createNode(model.id, model.get("name"), model.get("image"), model.get("children"));
 
 						// make sure parent is expanded
-
+						tree.expandNode(parent.id, true);
+						tree.selectNode(model.id);
 					});
 				},
 				error:function (model, resp, options) {
@@ -163,7 +164,7 @@ function loadContentTree(rootPageID) {
 
 				var l_return = [
 					{name:'Rename', action:function (id) {
-						tree.renameNode(id);
+						tree.editNodeName(id);
 					}},
 					{name:'Preview', action:function (id) {
 						console.log("Preview page: "+ id);

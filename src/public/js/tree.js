@@ -917,7 +917,9 @@ function Tree(config) {
 	return {
 		loadNode:loadNode,
 		createNode:createNode,
-		renameNode:editNodeName,
-		deleteNode:deleteNode
+		editNodeName:editNodeName,
+		deleteNode:deleteNode,
+		expandNode:expandNode,
+		selectNode:selectNode
 	}
 };
