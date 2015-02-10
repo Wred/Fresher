@@ -13,7 +13,6 @@ function Tree(config) {
 		divTree = document.getElementById(config.domID),
 		data = {};
 
-
 	// load root node
 	loadNode(config.rootID, function (err) {
 		if (err)
@@ -28,11 +27,11 @@ function Tree(config) {
 		return checkEdit();
 	};
 
-	document.onmousedown = function (e) {
+	document.addEventListener("mousedown", function (e) {
 		return checkEdit();
-	};
+	});
 
-	document.oncontextmenu = function(e) {
+	document.addEventListener("contextmenu", function(e) {
 		if (typeof config.onContext == "function") {
 			config.onContext(null, function (err, data) {
 				data.push({
@@ -50,17 +49,8 @@ function Tree(config) {
 		var evt=fixe(e);
 		evt.cancelBubble = true;
 		return false; // otherwise it keeps firing...
-	}
+	});
 
-	function checkEdit() {
-		if (idEditing) {
-	//		editNodeNameChange(null)
-			return true;
-		}
-		
-		hideContext();
-		return false;
-	}
 
 
 	window.onkeydown = function(e) {
@@ -127,6 +117,17 @@ function Tree(config) {
 // 			default:
 // 				console.log(keyCode);
 		}
+	}
+
+
+	function checkEdit() {
+		if (idEditing) {
+	//		editNodeNameChange(null)
+			return true;
+		}
+		
+		hideContext();
+		return false;
 	}
 
 
@@ -632,7 +633,7 @@ function Tree(config) {
 		g_mouseY = 0,
 		divDragWaiting = null;
 
-	document.onmouseup = endDrag;
+	document.addEventListener("mouseup", endDrag);
 
 	function endDrag() {
 		// in case we haven't even started moving the div
@@ -698,7 +699,8 @@ function Tree(config) {
 		}
 	}
 
-	document.onmousemove = function(e) {
+
+	document.addEventListener("mousemove", function(e) {
 		var evt=fixe(e);
 
 		g_mouseX = evt.pageX;
@@ -724,7 +726,7 @@ function Tree(config) {
 			divDragging.style.left = (g_mouseX  - divDragging.mouseLeft) + "px";
 			divDragging.style.top = (g_mouseY - divDragging.mouseTop) + "px";
 		}
-	}
+	});
 
 
 	function setDropTarget(p_div, p_before) {
