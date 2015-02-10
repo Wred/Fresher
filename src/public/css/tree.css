@@ -1,6 +1,5 @@
-﻿body, html {
-	margin: 10px 0px 0px 5px;
-	font-size:11px;
+.tree {
+	margin: 0px;
 	color: black;
 	background-color: #f2f6ff;
 }
@@ -58,16 +57,10 @@
 
 .expand {
 	font-family: monospace;
-	font-size: 18px;
+	font-weight: bold;
 	float:left;
 	padding-top: 4px;
 	color: #7fceff;
-	font-weight: bold;
-}
-
-.expand em {
-	color: #b2daff;
-	font-style: normal;
 }
 
 .nodeImage {

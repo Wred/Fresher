@@ -1,6 +1,6 @@
 BODY {
 	font-family: sans-serif;
-	margin:0px;
+	margin:10px;
 	padding:0px;
 	border:none;
 	background-color: white;
@@ -8,62 +8,3 @@ BODY {
 	font-size: 12px;
 }
 
-TABLE {
-	BORDER-COLLAPSE: COLLAPSE;
-}
-
-TH {
-	MARGIN: 0px;
-	PADDING: 0px;
-	text-align:right;
-	vertical-align:top;
-	padding-right: 5px;
-}
-
-TD {
-	MARGIN: 0px;
-	PADDING: 0px;
-}
-
-SELECT {
-	border: none;
-	font-size: 10px;
-}
-
-HR {
-	line-height: 1px;
-	height: 1px;
-	border: 0px;
-	margin: 0px;
-	padding: 0px;
-	color: #0077ae;
-	background-color: #0077ae;
-}
-
-INPUT {
-	border: none;
-	border-bottom: 1px dotted #7fceff;
-	background-color: white;
-	display: inline;
-}
-
-INPUT [type="submit"]{
-	border: 1px dotted #7fceff;
-}
-
-FORM {
-	display:inline;
-}
-
-IMG {
-	border:none;
-}
-
-
-IFRAME {
-	border: none;
-}
-
-OBJECT, EMBED {
-	border: none;
-}

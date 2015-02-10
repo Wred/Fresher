@@ -13,6 +13,8 @@ function Tree(config) {
 		divTree = document.getElementById(config.domID),
 		data = {};
 
+	divTree.className = "tree";
+
 	// load root node
 	loadNode(config.rootID, function (err) {
 		if (err)
