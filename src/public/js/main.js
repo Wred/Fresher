@@ -3,6 +3,7 @@ var tree,
 	pages = new Pages,
 	structures = new Structures;
 
+
 window.onload = function () {
 	// AM: NOTE: Backbone:
 	// I'm going to load the initial data in a second call.
@@ -67,7 +68,6 @@ function loadContentTree(rootPageID) {
 
 	tree = Tree({
 		domID:"tree",
-		// load first publication for now
 		rootID:rootPageID,
 		iconPath: "images/icons/",
 		onLoad: function (id, cb) {
