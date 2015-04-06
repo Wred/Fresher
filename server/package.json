@@ -5,8 +5,6 @@
   "author": "Andre Milton <andre@mediafresh.net>",
   "dependencies": {
     "express": "latest",
-    "nconf": "latest",
-    "jade": "latest",
     "body-parser": "latest",
     "mers": "latest",
     "mongoose": "latest"

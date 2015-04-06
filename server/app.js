@@ -1,3 +1,6 @@
+process.env.NODE_PATH = "lib";
+require('module').Module._initPaths();
+
 var express = require('express'),
 	app = express(),
 	http = require('http'),
