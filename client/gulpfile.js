@@ -1,32 +1,31 @@
 'use strict';
 
-var browserify = require('browserify');
-var gulp = require('gulp');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var uglify = require('gulp-uglify');
-var sourcemaps = require('gulp-sourcemaps');
-var gutil = require('gulp-util');
+var browserify = require('browserify'),
+    gulp = require('gulp'),
+    source = require('vinyl-source-stream'),
+    buffer = require('vinyl-buffer'),
+    uglify = require('gulp-uglify'),
+    sourcemaps = require('gulp-sourcemaps'),
+    gutil = require('gulp-util');
 
 gulp.task('browserify', function () {
-    console.log("Running browserify...");
+    var b = browserify({
+        entries: './src/main.js',
+        debug: true
+    });
 
-    return
-        browserify({
-            entries: './src/main.js',
-            debug: true
-        })
-        .bundle()
-        .pipe(source('main.js'))
+
+    return b.bundle()
+        .pipe(source('bundle.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
-            // Add transformation tasks to the pipeline here.
-            .pipe(uglify())
-            .on('error', gutil.log)
+        // Add transformation tasks to the pipeline here.
+        .pipe(uglify())
+        .on('error', gutil.log)
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/js/'));
+        .pipe(gulp.dest('./dist/js'));
 });
 
-
+gulp.watch('./src/**/*.js', ['browserify']);
 
 gulp.task('default', ['browserify']);

@@ -3,8 +3,6 @@
 		- Either use DOM to store structures (children etc) or data hash.  Not both.  It's redundant
 */
 
-
-
 function Tree(config) {
 	
 	var idSelected = null,
