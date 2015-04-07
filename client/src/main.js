@@ -2,7 +2,6 @@
 require("./backboneFixes.js");
 
 var _ = require("underscore"),
-	$ = require("jquery"),
 	async = require("async"),
 	Tree = require("./tree.js"),
 	publications = new (require("./models/publications.js")),
