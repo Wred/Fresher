@@ -1,4 +1,8 @@
 // My attempt to fix some Backbone peeves
+var Backbone = require("backbone"),
+	$ = require("jquery");
+
+Backbone.$ = $;
 
 Backbone.Model.prototype.idAttribute = "_id";
 
@@ -41,7 +45,6 @@ Backbone.Model.prototype.cbSave = function (attributes, cb) {
 }
 
 
-
 Backbone.Collection.prototype.parse = function (response) {
     if (response.status) {
         console.error("Error retrieving JSON from server:\n" + response);
@@ -81,7 +84,6 @@ Backbone.Collection.prototype.getFetch = function (id, cb) {
 };
 
 
-
 Backbone.Collection.prototype.cbFetch = function (cb) {
 	this.fetch({
 		error: function (collection, response, options) {
@@ -90,5 +92,5 @@ Backbone.Collection.prototype.cbFetch = function (cb) {
 		success: function (collection, response, options) {
 		    cb(null, collection);
 		}
-	});    
+	});
 }

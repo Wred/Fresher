@@ -1,4 +1,6 @@
-var Page = Backbone.Model.extend({
+var Backbone = require("backbone");
+
+module.exports = Backbone.Model.extend({
     url: function () {
         var _id = this.get("_id");
         if (_id) {
@@ -7,9 +9,4 @@ var Page = Backbone.Model.extend({
             return "/rest/page";
         }
     }
-});
-
-var Pages = Backbone.Collection.extend({
-    model: Page,
-    url: "/rest/page"
 });

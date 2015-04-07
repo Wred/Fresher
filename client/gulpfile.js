@@ -14,15 +14,19 @@ gulp.task('browserify', function () {
         debug: true
     });
 
-
     return b.bundle()
         .pipe(source('bundle.js'))
         .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(sourcemaps.init({
+            loadMaps: true,
+            debug: true
+        }))
         // Add transformation tasks to the pipeline here.
         .pipe(uglify())
         .on('error', gutil.log)
-        .pipe(sourcemaps.write('./'))
+        .pipe(sourcemaps.write('./', {
+            debug: true
+        }))
         .pipe(gulp.dest('./dist/js'));
 });
 

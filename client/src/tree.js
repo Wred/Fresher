@@ -3,8 +3,11 @@
 		- Either use DOM to store structures (children etc) or data hash.  Not both.  It's redundant
 */
 
-function Tree(config) {
-	
+var async = require("async"),
+	_ = require("underscore");
+
+module.exports = function Tree(config) {
+
 	var idSelected = null,
 		idFocus = null,
 		idEditing = null,
