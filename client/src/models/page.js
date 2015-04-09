@@ -1,6 +1,6 @@
-var Backbone = require("backbone");
+var Model = require("ampersand-model");
 
-module.exports = Backbone.Model.extend({
+module.exports = Model.extend({
     url: function () {
         var _id = this.get("_id");
         if (_id) {

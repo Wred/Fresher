@@ -76,7 +76,7 @@ function loadContentTree(rootPageID) {
 		rootID:rootPageID,
 		iconPath: "images/icons/",
 		onLoad: function (id, cb) {
-			pages.getFetch(id, function (err, model) {
+			pages.getOrFetch(id, function (err, model) {
 				if (err)
 					return console.log("Couldn't load page: "+ id);
 

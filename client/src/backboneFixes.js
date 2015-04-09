@@ -1,12 +1,10 @@
 // My attempt to fix some Backbone peeves
-var Backbone = require("backbone"),
-	$ = require("jquery");
+var Model = require("ampersand-model"),
+	Collection = require("ampersand-rest-collection");
 
-Backbone.$ = $;
+Model.prototype.idAttribute = "_id";
 
-Backbone.Model.prototype.idAttribute = "_id";
-
-Backbone.Model.prototype.parse = function (response) {
+Model.prototype.parse = function (response) {
     if (response.hasOwnProperty("_id")) {
         // AM: NOTE: Backbone:
         // this parse was called after loading an entire collection.
@@ -25,7 +23,7 @@ Backbone.Model.prototype.parse = function (response) {
 
 
 // do our own save function with a single callback
-Backbone.Model.prototype.cbSave = function (attributes, cb) {
+Model.prototype.cbSave = function (attributes, cb) {
 
     var jqXHR = this.save(attributes, {wait:true});
 
@@ -45,7 +43,7 @@ Backbone.Model.prototype.cbSave = function (attributes, cb) {
 }
 
 
-Backbone.Collection.prototype.parse = function (response) {
+Collection.prototype.parse = function (response) {
     if (response.status) {
         console.error("Error retrieving JSON from server:\n" + response);
         // AM: NOTE: Backbone:
@@ -57,34 +55,8 @@ Backbone.Collection.prototype.parse = function (response) {
 };
 
 
-// AM: NOTE: Backbone:
-// Creating my own get method that will fetch if we don't
-// already have the model and add it to the collection
-Backbone.Collection.prototype.getFetch = function (id, cb) {
-    // AM: NOTE: Backbone:
-    // If I don't have it, just get it from the server.
-    // and make this call async...
-    var self = this,
-        _model = self.get(id);
 
-    if (_model) {
-        cb(null, _model);
-    } else {
-        _model = new self.model({_id:id});
-        _model.fetch({
-            success: function (model, response, options) {
-                self.add(model);
-                cb(null, model);
-            },
-            error: function (model, response, options) {
-                cb("Couldn't load page:\n"+ response);
-            }
-        })
-    }
-};
-
-
-Backbone.Collection.prototype.cbFetch = function (cb) {
+Collection.prototype.cbFetch = function (cb) {
 	this.fetch({
 		error: function (collection, response, options) {
 		    cb(response);

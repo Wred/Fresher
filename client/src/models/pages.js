@@ -1,6 +1,6 @@
-var Backbone = require("backbone");
+var Collection = require("ampersand-rest-collection");
 
-module.exports = Backbone.Collection.extend({
+module.exports = Collection.extend({
     model: require("./page.js"),
     url: "/rest/page"
 });
