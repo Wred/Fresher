@@ -80,7 +80,7 @@ function loadContentTree(rootPageID) {
 				if (err)
 					return console.log("Couldn't load page: "+ id);
 
-				cb(null, model.get("name"), model.get("image"), model.get("children"));
+				cb(null, model.name, model.image, model.children);
 			});
 		},
 		onClick:function(id) {

@@ -10,7 +10,7 @@ var browserify = require('browserify'),
 
 gulp.task('browserify', function () {
     var b = browserify({
-        entries: './src/main.js',
+        entries: './source/main.js',
         debug: true
     });
 
@@ -30,6 +30,6 @@ gulp.task('browserify', function () {
         .pipe(gulp.dest('./dist/js'));
 });
 
-gulp.watch('./src/**/*.js', ['browserify']);
+gulp.watch('./source/**/*.js', ['browserify']);
 
 gulp.task('default', ['browserify']);
