@@ -4,7 +4,7 @@
 */
 
 var async = require("async"),
-	_ = require("underscore");
+	_ = require("lodash");
 
 module.exports = function Tree(config) {
 
@@ -868,7 +868,7 @@ module.exports = function Tree(config) {
 	function findParent(childID) {
 		// should only be used rarely (long)
 		for (var id in data) {
-			if (_.contains(data[id].children, childID)) {
+			if (_.includes(data[id].children, childID)) {
 				return id;
 			}
 		}

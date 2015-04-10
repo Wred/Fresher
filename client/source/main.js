@@ -1,7 +1,7 @@
 // our backbone.js "fixes"
 require("./backboneFixes.js");
 
-var _ = require("underscore"),
+var _ = require("lodash"),
 	async = require("async"),
 	Tree = require("./tree.js"),
 	publications = new (require("./models/publications.js")),
@@ -124,7 +124,7 @@ function loadContentTree(rootPageID) {
 					// add it to new parent
 					// first find the parent
 					var newParents = pages.filter(function (page) {
-						return _.contains(page.get("children"), target_id);
+						return _.includes(page.get("children"), target_id);
 					});
 
 					// there should only be one new parent..
