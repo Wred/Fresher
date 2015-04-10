@@ -34,7 +34,6 @@ gulp.task('browserify', function () {
 
 gulp.watch('./source/**/*.js', ['browserify']);
 
-
 gulp.task('sass', function () {
     gulp.src('./styles/*.scss')
         .pipe(sourcemaps.init())
@@ -46,6 +45,6 @@ gulp.task('sass', function () {
         .pipe(gulp.dest('./dist/css'));
 });
 
-gulp.watch('./styles/**/*.scss', ['sass']);
+gulp.watch('./styles/*.scss', ['sass']);
 
 gulp.task('default', ['browserify', 'sass']);
