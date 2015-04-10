@@ -6,7 +6,9 @@ var browserify = require('browserify'),
     buffer = require('vinyl-buffer'),
     uglify = require('gulp-uglify'),
     sourcemaps = require('gulp-sourcemaps'),
-    gutil = require('gulp-util');
+    gutil = require('gulp-util'),
+    sass = require('gulp-sass'),
+    concat = require('gulp-concat');
 
 gulp.task('browserify', function () {
     var b = browserify({
@@ -32,4 +34,18 @@ gulp.task('browserify', function () {
 
 gulp.watch('./source/**/*.js', ['browserify']);
 
-gulp.task('default', ['browserify']);
+
+gulp.task('sass', function () {
+    gulp.src('./styles/*.scss')
+        .pipe(sourcemaps.init())
+        .pipe(concat('style.scss'))
+        .pipe(sass())
+        .pipe(sourcemaps.write('./', {
+            debug: true
+        }))
+        .pipe(gulp.dest('./dist/css'));
+});
+
+gulp.watch('./styles/**/*.scss', ['sass']);
+
+gulp.task('default', ['browserify', 'sass']);

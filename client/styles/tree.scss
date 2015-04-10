@@ -1,0 +1,107 @@
+.tree {
+	margin: 0px;
+	color: black;
+	background-color: #f2f6ff;
+
+	.childNodes {
+		padding-left: 10px;
+		display: block;
+		float: none;
+	}
+
+	.childNodesHidden {
+		display: none;
+	}
+
+	.node {
+		cursor: pointer;
+		clear: both;
+	}
+
+	.nodeName {
+		margin-left: 33px;
+		min-height: 15px;
+		padding:3px;
+		padding-left: 5px;
+		cursor: pointer;
+	}
+
+	.nodeNameSelected {
+		margin-left: 33px;
+		min-height: 15px;
+		padding:3px;
+		padding-left: 5px;
+		cursor: pointer;
+		background-color: #7fceff;
+		color: white;
+	}
+
+	.nodeNameOver {
+		margin-left: 33px;
+		min-height: 15px;
+		padding:3px;
+		padding-left: 5px;
+		cursor: pointer;
+		background-color: #e4f1fa;
+	}
+
+	.nodeNameEdit {
+		margin-left: 33px;
+		min-height: 15px;
+		padding:3px;
+		padding-left: 5px;
+		cursor: text;
+		background-color: white;
+	}
+
+	.expand {
+		font-family: monospace;
+		font-weight: bold;
+		float:left;
+		padding-top: 4px;
+		color: #7fceff;
+	}
+
+	.nodeImage {
+		vertical-align:middle;
+		float: left;
+		padding-top: 4px;
+		padding-left: 5px;
+	}
+
+
+
+	.dropOff {
+		height: 0px;
+	}
+
+	.dropOver {
+		min-height: 21px;
+	}
+	
+}
+
+
+
+.contextMenuBody {
+	position: absolute;
+	width: 140px;
+	background-color: white;
+}
+
+.contextMenuBody img {
+	vertical-align: middle;
+	padding: 3px;
+}
+
+.contextMenuItem {
+	padding: 3px;
+	cursor: default;
+}
+
+.contextMenuItemOver {
+	padding: 3px;
+	cursor: default;
+	color: white;
+	background-color: #7fceff;
+}
