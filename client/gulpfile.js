@@ -22,8 +22,8 @@ gulp.task('browserify', function () {
             debug: true
         }))
         // Add transformation tasks to the pipeline here.
-        .pipe(uglify())
-        .on('error', gutil.log)
+//         .pipe(uglify())
+//         .on('error', gutil.log)
         .pipe(sourcemaps.write('./', {
             debug: true
         }))

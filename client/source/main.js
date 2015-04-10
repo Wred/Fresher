@@ -22,7 +22,7 @@ window.onload = function () {
 		],
 		function (err, results) {
 			if (err)
-				return console.error("Unable to start: "+ err);
+				return console.error("Unable to read publications/structures: "+ err);
 
 			// start with first publication (we'll change this one we get cookies going)
 			loadContentTree(publications.at(0).get("rootPage"));
@@ -76,11 +76,11 @@ function loadContentTree(rootPageID) {
 		rootID:rootPageID,
 		iconPath: "images/icons/",
 		onLoad: function (id, cb) {
-			pages.getOrFetch(id, function (err, model) {
+			pages.getOrFetch(id, {}, function (err, model) {
 				if (err)
 					return console.log("Couldn't load page: "+ id);
 
-				cb(null, model.name, model.image, model.children);
+				cb(null, model.get("name"), model.get("image"), model.get("children"));
 			});
 		},
 		onClick:function(id) {
