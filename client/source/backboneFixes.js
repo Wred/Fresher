@@ -2,6 +2,7 @@
 var Model = require("ampersand-model"),
 	Collection = require("ampersand-rest-collection");
 
+
 Model.prototype.idAttribute = "_id";
 
 Model.prototype.parse = function (response) {
@@ -25,21 +26,21 @@ Model.prototype.parse = function (response) {
 // do our own save function with a single callback
 Model.prototype.cbSave = function (attributes, cb) {
 
-    var jqXHR = this.save(attributes, {wait:true});
+    var XHR = this.save(attributes, {wait:true});
 
-    if (!jqXHR) {
+    if (!XHR) {
         // failed validation
         return cb("Failed validation");
     }
 
-    // otherwise we made it
-    jqXHR
-        .fail(function (jqXHR, textStatus, errorThrown) {
-            cb(errorThrown);
-        })
-        .done(function (data, textStatus, jqXHR) {
-            cb(null, data);
-        });
+	XHR.addEventListener("load", function (e) {
+		cb(null, XHR.response);
+	});
+
+	XHR.addEventListener("error", function () {
+		cb(XHR.statusText);
+	});
+
 }
 
 

@@ -8,7 +8,16 @@ var browserify = require('browserify'),
     sourcemaps = require('gulp-sourcemaps'),
     gutil = require('gulp-util'),
     sass = require('gulp-sass'),
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    plumber = require('gulp-plumber');
+
+function errorHandler(error) {
+      // Output an error message
+      gutil.log(gutil.colors.red('Error (' + error.plugin + '): ' + error.message));
+      // emit the end event, to properly end the task
+      this.emit('end');
+}
+
 
 gulp.task('browserify', function () {
     var b = browserify({
@@ -16,7 +25,14 @@ gulp.task('browserify', function () {
         debug: true
     });
 
-    return b.bundle()
+    return b
+        .bundle()
+        .on('error', function(error){
+            // Output an error message
+            gutil.log(gutil.colors.red('Browserify error:\n' + error.message));
+            this.emit('end');
+        })
+        .pipe(plumber({errorHandler:errorHandler}))
         .pipe(source('bundle.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({
@@ -36,6 +52,7 @@ gulp.watch('./source/**/*.js', ['browserify']);
 
 gulp.task('sass', function () {
     gulp.src('./styles/*.scss')
+        .pipe(plumber({errorHandler:errorHandler}))
         .pipe(sourcemaps.init())
         .pipe(concat('style.scss'))
         .pipe(sass())

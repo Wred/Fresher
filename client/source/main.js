@@ -48,21 +48,22 @@ function loadContentTree(rootPageID) {
 					// now we can add the _id of the new page to the parent's children
 					var parent = pages.get(id);
 					var children = parent.get("children");
-					children.push(model.id);
-					parent.cbSave({children:children}, function (err, response) {
-						if (err)
-							return console.error(err);
+					children.push(model.get("_id"));
+					parent.cbSave({children:children},
+						function (err, response) {
+							if (err)
+								return console.error(err);
 
-						// update parent (to update children)
-						tree.createNode(parent.id, parent.get("name"), parent.get("image"), parent.get("children"));
+							// update parent (to update children)
+							tree.createNode(parent.get("_id"), parent.get("name"), parent.get("image"), parent.get("children"));
 
-						// add node
-						tree.createNode(model.id, model.get("name"), model.get("image"), model.get("children"));
+							// add node
+							tree.createNode(model.get("_id"), model.get("name"), model.get("image"), model.get("children"));
 
-						// make sure parent is expanded
-						tree.expandNode(parent.id, true);
-						tree.selectNode(model.id);
-					});
+							// make sure parent is expanded
+							tree.expandNode(parent.get("_id"), true);
+							tree.selectNode(model.get("_id"));
+						});
 				},
 				error:function (model, resp, options) {
 					console.error("Couldn't create new page");
@@ -164,7 +165,13 @@ function loadContentTree(rootPageID) {
 			if (id) {
 				// add structures to new context menu
 				var subs = structures.map(function (structure) {
-					return {name:structure.get("name"), icon:structure.get("image"), action: function (id) {contextNew(id, structure.id)}};
+					return {
+						name:structure.get("name"),
+						icon:structure.get("image"),
+						action: function (id) {
+							contextNew(id, structure.get("_id"));
+						}
+					};
 				});
 
 				var l_return = [
