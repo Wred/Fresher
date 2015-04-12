@@ -2,10 +2,18 @@ BODY {
   font-family: sans-serif;
   margin: 10px; }
 
+.content {
+  overflow: auto;
+  display: inline-block;
+  vertical-align: top; }
+
 .tree {
-  margin: 0px;
   color: black;
-  background-color: #f2f6ff; }
+  background-color: #f2f6ff;
+  display: inline-block;
+  overflow: auto;
+  vertical-align: top;
+  width: 20%; }
   .tree .childNodes {
     padding-left: 10px;
     display: block;
@@ -59,24 +67,21 @@ BODY {
   .tree .dropOver {
     min-height: 21px; }
 
-.contextMenuBody {
+.contextMenu {
   position: absolute;
   width: 140px;
   background-color: white; }
-
-.contextMenuBody img {
-  vertical-align: middle;
-  padding: 3px; }
-
-.contextMenuItem {
-  padding: 3px;
-  cursor: default; }
-
-.contextMenuItemOver {
-  padding: 3px;
-  cursor: default;
-  color: white;
-  background-color: #7fceff; }
+  .contextMenu img {
+    vertical-align: middle;
+    padding: 3px; }
+  .contextMenu .item {
+    padding: 3px;
+    cursor: default; }
+  .contextMenu .itemOver {
+    padding: 3px;
+    cursor: default;
+    color: white;
+    background-color: #7fceff; }
 
 
 /*# sourceMappingURL=style.css.map */

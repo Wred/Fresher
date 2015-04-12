@@ -4,6 +4,7 @@ require("./backboneFixes.js");
 var _ = require("lodash"),
 	async = require("async"),
 	Tree = require("./tree.js"),
+	Content = require("./content.js"),
 	publications = new (require("./models/publications.js")),
 	pages = new (require("./models/pages.js")),
 	structures = new (require("./models/structures.js"));
@@ -24,15 +25,14 @@ window.onload = function () {
 			if (err)
 				return console.error("Unable to read publications/structures: "+ err);
 
-			// start with first publication (we'll change this one we get cookies going)
-			loadContentTree(publications.at(0).get("rootPage"));
+			loadContent();
 		});
 }
 
 
-function loadContentTree(rootPageID) {
+function loadContent() {
 	
-	function contextNew(id, idStruct) {	
+	function contextNew(id, idStruct) {
 		var structure = structures.get(idStruct);
 		
 		// create page and save it on server
@@ -71,11 +71,12 @@ function loadContentTree(rootPageID) {
 				}
 			});
 	}
-	
+
 
 	var tree = Tree({
 		domID:"tree",
-		rootID:rootPageID,
+		// start with first publication (we'll change this one we get cookies going)
+		rootID:publications.at(0).get("rootPage"),
 		iconPath: "images/icons/",
 		onLoad: function (id, cb) {
 			pages.getOrFetch(id, {}, function (err, model) {
@@ -201,4 +202,9 @@ function loadContentTree(rootPageID) {
 			return cb(null, []);
 		}
 	});
+
+
+	var content = Content(document.getElementById("content"));
 }
+
+

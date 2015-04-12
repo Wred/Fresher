@@ -3,7 +3,12 @@ module.exports = function (mongoose) {
 		'Structure',
 		new mongoose.Schema({
 			name: String,
-			image: String
+			image: String,
+			defaultElements: [{
+				id: mongoose.Schema.Types.ObjectId,
+				name: String,
+				type: String
+			}]
 		})
 	);
 };

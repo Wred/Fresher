@@ -3,8 +3,10 @@
 		- Either use DOM to store structures (children etc) or data hash.  Not both.  It's redundant
 */
 
+
 var async = require("async"),
 	_ = require("lodash");
+
 
 module.exports = function Tree(config) {
 
@@ -20,15 +22,11 @@ module.exports = function Tree(config) {
 	loadNode(config.rootID, function (err) {
 		if (err)
 			return console.error("Couldn't load root node");
-
-// 		expandNode(config.rootID, true);
-// 		focusNode(config.rootID);
-// 		selectNode(config.rootID);
 	});
 
-	document.onselectstart = function (e) {
-		return checkEdit();
-	};
+// 	document.onselectstart = function (e) {
+// 		return checkEdit();
+// 	};
 
 	document.addEventListener("mousedown", function (e) {
 		return checkEdit();
@@ -489,7 +487,7 @@ module.exports = function Tree(config) {
 	function showContext (id, p_data) {
 		if (g_divContext == null) {
 			g_divContext = document.createElement("div");
-			g_divContext.className = "contextMenuBody";
+			g_divContext.className = "contextMenu";
 			document.body.appendChild(g_divContext);
 		}
 		
@@ -509,14 +507,14 @@ module.exports = function Tree(config) {
 			else
 				l_item.style.clear = "both";
 				
-			l_item.className = "contextMenuItem";
+			l_item.className = "item";
 			
 			l_item.onmouseover = function () {
-				this.className = "contextMenuItemOver";
+				this.className = "itemOver";
 			}
 			
 			l_item.onmouseout = function () {
-				this.className = "contextMenuItem";
+				this.className = "item";
 			}
 			
 			l_item.onmousedown = function(e) {
@@ -961,18 +959,19 @@ module.exports = function Tree(config) {
 		} else {
 			persistance.expanded = _.without(persistance.expanded, id);
 		}
-		
+
 		saveStorage();
 	}
 
 	function loadSelected(id) {
 		return persistance.selected === id;
-	}
+	}	
 
 	function saveSelected(id) {
 		persistance.selected = id;
 		saveStorage();
 	}
+
 
 	function saveStorage() {
 		localStorage[config.rootID] = JSON.stringify(persistance);

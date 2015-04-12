@@ -5,7 +5,11 @@ server {
 		proxy_pass http://127.0.0.1:5000/rest;
 	}
 
+	location /init {
+		proxy_pass http://127.0.0.1:5000/init;
+	}
+
 	location /source {
-		alias /opt/Fresher/client;
+		alias /opt/Fresher/client/source;
 	}
 }

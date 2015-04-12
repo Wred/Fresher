@@ -63,6 +63,6 @@ gulp.task('sass', function () {
         .pipe(gulp.dest('./dist/css'));
 });
 
-gulp.watch('./styles/*.scss', ['sass']);
+gulp.watch('./styles/*', ['sass']);
 
 gulp.task('default', ['browserify', 'sass']);

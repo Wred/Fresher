@@ -5,6 +5,7 @@ require("./backboneFixes.js");
 var _ = require("lodash"),
 	async = require("async"),
 	Tree = require("./tree.js"),
+	Content = require("./content.js"),
 	publications = new (require("./models/publications.js")),
 	pages = new (require("./models/pages.js")),
 	structures = new (require("./models/structures.js"));
@@ -25,15 +26,14 @@ window.onload = function () {
 			if (err)
 				return console.error("Unable to read publications/structures: "+ err);
 
-			// start with first publication (we'll change this one we get cookies going)
-			loadContentTree(publications.at(0).get("rootPage"));
+			loadContent();
 		});
 }
 
 
-function loadContentTree(rootPageID) {
+function loadContent() {
 	
-	function contextNew(id, idStruct) {	
+	function contextNew(id, idStruct) {
 		var structure = structures.get(idStruct);
 		
 		// create page and save it on server
@@ -72,11 +72,12 @@ function loadContentTree(rootPageID) {
 				}
 			});
 	}
-	
+
 
 	var tree = Tree({
 		domID:"tree",
-		rootID:rootPageID,
+		// start with first publication (we'll change this one we get cookies going)
+		rootID:publications.at(0).get("rootPage"),
 		iconPath: "images/icons/",
 		onLoad: function (id, cb) {
 			pages.getOrFetch(id, {}, function (err, model) {
@@ -202,8 +203,14 @@ function loadContentTree(rootPageID) {
 			return cb(null, []);
 		}
 	});
+
+
+	var content = Content(document.getElementById("content"));
 }
-},{"./backboneFixes.js":133,"./models/pages.js":135,"./models/publications.js":137,"./models/structures.js":139,"./tree.js":140,"async":82,"lodash":125}],2:[function(require,module,exports){
+
+
+
+},{"./backboneFixes.js":133,"./content.js":134,"./models/pages.js":136,"./models/publications.js":138,"./models/structures.js":140,"./tree.js":141,"async":82,"lodash":125}],2:[function(require,module,exports){
 ;if (typeof window !== "undefined") {  window.ampersand = window.ampersand || {};  window.ampersand["ampersand-events"] = window.ampersand["ampersand-events"] || [];  window.ampersand["ampersand-events"].push("1.1.1");}
 var runOnce = require('lodash.once');
 var uniqueId = require('lodash.uniqueid');
@@ -23897,6 +23904,12 @@ Collection.prototype.cbFetch = function (cb) {
 	});
 }
 },{"ampersand-model":5,"ampersand-rest-collection":12}],134:[function(require,module,exports){
+
+
+module.exports = function (DOM) {
+    DOM.className = "content";
+};
+},{}],135:[function(require,module,exports){
 var Model = require("ampersand-model");
 
 module.exports = Model.extend({
@@ -23915,7 +23928,7 @@ module.exports = Model.extend({
         }
     }
 });
-},{"ampersand-model":5}],135:[function(require,module,exports){
+},{"ampersand-model":5}],136:[function(require,module,exports){
 var Collection = require("ampersand-rest-collection");
 
 module.exports = Collection.extend({
@@ -23923,7 +23936,7 @@ module.exports = Collection.extend({
     url: "/rest/page"
 });
 
-},{"./page.js":134,"ampersand-rest-collection":12}],136:[function(require,module,exports){
+},{"./page.js":135,"ampersand-rest-collection":12}],137:[function(require,module,exports){
 var Model = require("ampersand-model");
 
 module.exports = Model.extend({
@@ -23933,14 +23946,14 @@ module.exports = Model.extend({
         rootPage: 'string'
     }
 });
-},{"ampersand-model":5}],137:[function(require,module,exports){
+},{"ampersand-model":5}],138:[function(require,module,exports){
 var Collection = require("ampersand-rest-collection");
 
 module.exports = Collection.extend({
     model: require("./publication.js"),
     url: "/rest/publication"
 });
-},{"./publication.js":136,"ampersand-rest-collection":12}],138:[function(require,module,exports){
+},{"./publication.js":137,"ampersand-rest-collection":12}],139:[function(require,module,exports){
 var Model = require("ampersand-model");
 
 module.exports = Model.extend({
@@ -23950,7 +23963,7 @@ module.exports = Model.extend({
         image: 'string'
     }
 });
-},{"ampersand-model":5}],139:[function(require,module,exports){
+},{"ampersand-model":5}],140:[function(require,module,exports){
 var Collection = require("ampersand-rest-collection");
 
 module.exports = Collection.extend({
@@ -23958,14 +23971,16 @@ module.exports = Collection.extend({
     url: "/rest/structure"
 });
 
-},{"./structure.js":138,"ampersand-rest-collection":12}],140:[function(require,module,exports){
+},{"./structure.js":139,"ampersand-rest-collection":12}],141:[function(require,module,exports){
 /*
 	Improvements:
 		- Either use DOM to store structures (children etc) or data hash.  Not both.  It's redundant
 */
 
+
 var async = require("async"),
 	_ = require("lodash");
+
 
 module.exports = function Tree(config) {
 
@@ -23981,15 +23996,11 @@ module.exports = function Tree(config) {
 	loadNode(config.rootID, function (err) {
 		if (err)
 			return console.error("Couldn't load root node");
-
-// 		expandNode(config.rootID, true);
-// 		focusNode(config.rootID);
-// 		selectNode(config.rootID);
 	});
 
-	document.onselectstart = function (e) {
-		return checkEdit();
-	};
+// 	document.onselectstart = function (e) {
+// 		return checkEdit();
+// 	};
 
 	document.addEventListener("mousedown", function (e) {
 		return checkEdit();
@@ -24450,7 +24461,7 @@ module.exports = function Tree(config) {
 	function showContext (id, p_data) {
 		if (g_divContext == null) {
 			g_divContext = document.createElement("div");
-			g_divContext.className = "contextMenuBody";
+			g_divContext.className = "contextMenu";
 			document.body.appendChild(g_divContext);
 		}
 		
@@ -24470,14 +24481,14 @@ module.exports = function Tree(config) {
 			else
 				l_item.style.clear = "both";
 				
-			l_item.className = "contextMenuItem";
+			l_item.className = "item";
 			
 			l_item.onmouseover = function () {
-				this.className = "contextMenuItemOver";
+				this.className = "itemOver";
 			}
 			
 			l_item.onmouseout = function () {
-				this.className = "contextMenuItem";
+				this.className = "item";
 			}
 			
 			l_item.onmousedown = function(e) {
@@ -24922,18 +24933,19 @@ module.exports = function Tree(config) {
 		} else {
 			persistance.expanded = _.without(persistance.expanded, id);
 		}
-		
+
 		saveStorage();
 	}
 
 	function loadSelected(id) {
 		return persistance.selected === id;
-	}
+	}	
 
 	function saveSelected(id) {
 		persistance.selected = id;
 		saveStorage();
 	}
+
 
 	function saveStorage() {
 		localStorage[config.rootID] = JSON.stringify(persistance);
@@ -24954,6 +24966,7 @@ module.exports = function Tree(config) {
 		selectNode:selectNode
 	}
 };
+
 },{"async":82,"lodash":125}]},{},[1])
 
 
