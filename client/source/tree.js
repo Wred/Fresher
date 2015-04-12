@@ -341,6 +341,10 @@ module.exports = function Tree(config) {
 			l_data.divChildren = l_divChildren;
 			
 			l_divChildren.className = "childNodesHidden";
+
+			if (loadExpanded(id)) {
+				expandNode(id, true);
+			}
 		}
 
 		// applies to both existing and new nodes
@@ -403,6 +407,9 @@ module.exports = function Tree(config) {
 				l_data.divChildren.className = "childNodes";
 				l_data.plus.innerHTML = "O";
 
+				// remember this
+				saveExpanded(id, true);
+
 				// make sure all the children are loaded
 				async.each(l_data.children,
 					function (child, cb) {
@@ -428,6 +435,9 @@ module.exports = function Tree(config) {
 				l_data.expanded = false;
 				l_data.divChildren.className = "childNodesHidden";
 				l_data.plus.innerHTML = "+";
+
+				// remember this
+				saveExpanded(id, false);
 			} else {
 				// already collpased.  We'll collapse parent cause this was likely a left key press (moving up the tree)
 				expandNode(l_data.parentID, false);
@@ -913,11 +923,42 @@ module.exports = function Tree(config) {
 	//	Utils
 	//
 
-
-
 	function fixe(e) {
 		return (e ? e : window.event);
 	}
+
+
+	////////////////////////////////////////////////////
+	//
+	//	Local persistance
+	//
+
+	var persistance = {},
+		storedString = localStorage[config.rootID];
+
+	if (storedString) {
+		persistance = JSON.parse(storedString);
+	}
+	
+	if (!persistance.hasOwnProperty("expanded")) {
+		persistance.expanded = [];
+	}
+
+	function loadExpanded(id) {
+		return _.includes(persistance.expanded, id);
+	}
+
+	function saveExpanded(id, bool) {
+		if (bool) {
+			if (! _.includes(persistance.expanded, id))
+				persistance.expanded.push(id);
+		} else {
+			persistance.expanded = _.without(persistance.expanded, id);
+		}
+		// save it
+		localStorage[config.rootID] = JSON.stringify(persistance);
+	}
+
 
 	return {
 		loadNode:loadNode,

@@ -29,7 +29,8 @@ gulp.task('browserify', function () {
         .bundle()
         .on('error', function(error){
             // Output an error message
-            gutil.log(gutil.colors.red('Browserify error:\n' + error.message));
+            gutil.log('Browserify error:');
+            gutil.log(gutil.colors.red(error.message));
             this.emit('end');
         })
         .pipe(plumber({errorHandler:errorHandler}))

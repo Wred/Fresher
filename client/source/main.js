@@ -71,6 +71,7 @@ function loadContentTree(rootPageID) {
 				}
 			});
 	}
+	
 
 	var tree = Tree({
 		domID:"tree",
@@ -200,5 +201,4 @@ function loadContentTree(rootPageID) {
 			return cb(null, []);
 		}
 	});
-
 }
