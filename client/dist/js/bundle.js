@@ -88,7 +88,8 @@ function loadContent() {
 			});
 		},
 		onClick:function(id) {
-			console.log("open page: "+ id);
+			var page = pages.get(id);
+			content.showContent(page.get("elements")[0].values[0].value);
 		},
 		onDrop:function(id, target_id, old_parent_id, cb) {
 			var parent = pages.get(target_id),
@@ -23908,6 +23909,14 @@ Collection.prototype.cbFetch = function (cb) {
 
 module.exports = function (DOM) {
     DOM.className = "content";
+
+    function showContent(str) {
+        DOM.innerHTML = str;
+    }
+
+    return {
+        showContent:showContent
+    }
 };
 },{}],135:[function(require,module,exports){
 var Model = require("ampersand-model");
@@ -23917,7 +23926,9 @@ module.exports = Model.extend({
         _id: 'string',
         name: 'string',
         image: 'string',
-        children: 'array'
+        children: 'array',
+        structure: 'string',
+        elements: 'array'
     },
     url: function () {
         var _id = this.get("_id");
@@ -23958,9 +23969,10 @@ var Model = require("ampersand-model");
 
 module.exports = Model.extend({
     props: {
-        _id: '_id',
+        _id: 'string',
         name: 'string',
-        image: 'string'
+        image: 'string',
+        defaultElements: 'array'
     }
 });
 },{"ampersand-model":5}],140:[function(require,module,exports){

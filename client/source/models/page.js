@@ -5,7 +5,9 @@ module.exports = Model.extend({
         _id: 'string',
         name: 'string',
         image: 'string',
-        children: 'array'
+        children: 'array',
+        structure: 'string',
+        elements: 'array'
     },
     url: function () {
         var _id = this.get("_id");

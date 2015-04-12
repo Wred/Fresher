@@ -23,23 +23,52 @@ app.use('/rest', require('mers')({mongoose:mongoose}).rest());
 // Initialize instance:
 app.get('/init', function (req, res) {
 	var db = mongoose.connection.db;
+
+	// clear the database
 	db.dropDatabase();
 
-	// create home page
-	db.collection("pages").insert({name:"Home",children:[],image:"page.gif"}, function (err, result) {
+	// generate an ID for the content element
+	var contentID = mongoose.Types.ObjectId();
+
+	// create home structure
+	db.collection("structures").insert({
+		name:"Home",
+		image:"page.gif",
+		defaultElements: [{
+			id: contentID,
+			name: "Content",
+			type: "Text"
+		}]
+	}, function (err, result) {
 		if (err)
 			return res.status(500).send(err);
+		
+		var structure = result.ops[0];
 
-		var page = result.ops[0];
+		// create home page
+		db.collection("pages").insert({
+			name:"Home",
+			image:"page.gif",
+			children:[],
+			structure:structure._id,
+			elements:[{
+				id: contentID,
+				values: [{
+					lang: 'en',
+					value: 'Hello world!!'
+				}]
+			}]
+		}, function (err, result) {
+			if (err)
+				return res.status(500).send(err);
 
-		// create publication
-		db.collection("publications").insert({name:"pub",rootPage:page._id});
+			var page = result.ops[0];
 
-		// create structure
-		db.collection("structures").insert({name:"Home",image:"page.gif"});
-		db.collection("structures").insert({name:"Section",image:"folder.gif"});
+			// create first publication and set this as the root page
+			db.collection("publications").insert({name:"pub",rootPage:page._id});
 
-		res.send("OK");
+			res.send("OK");
+		});
 	});
 });
 

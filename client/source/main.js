@@ -87,7 +87,8 @@ function loadContent() {
 			});
 		},
 		onClick:function(id) {
-			console.log("open page: "+ id);
+			var page = pages.get(id);
+			content.showContent(page.get("elements")[0].values[0].value);
 		},
 		onDrop:function(id, target_id, old_parent_id, cb) {
 			var parent = pages.get(target_id),

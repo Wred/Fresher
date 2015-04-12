@@ -2,8 +2,9 @@ var Model = require("ampersand-model");
 
 module.exports = Model.extend({
     props: {
-        _id: '_id',
+        _id: 'string',
         name: 'string',
-        image: 'string'
+        image: 'string',
+        defaultElements: 'array'
     }
 });
