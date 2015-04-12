@@ -23982,9 +23982,9 @@ module.exports = function Tree(config) {
 		if (err)
 			return console.error("Couldn't load root node");
 
-		expandNode(config.rootID, true);
-		focusNode(config.rootID);
-		selectNode(config.rootID);
+// 		expandNode(config.rootID, true);
+// 		focusNode(config.rootID);
+// 		selectNode(config.rootID);
 	});
 
 	document.onselectstart = function (e) {
@@ -24306,6 +24306,10 @@ module.exports = function Tree(config) {
 			if (loadExpanded(id)) {
 				expandNode(id, true);
 			}
+
+			if (loadSelected(id)) {
+				selectNode(id);
+			}
 		}
 
 		// applies to both existing and new nodes
@@ -24336,6 +24340,8 @@ module.exports = function Tree(config) {
 			data[idSelected].divName.className = "nodeName";
 		
 		idSelected = id;
+
+		saveSelected(id);
 		
 		if (idSelected) {
 			focusNode(idSelected);
@@ -24916,10 +24922,28 @@ module.exports = function Tree(config) {
 		} else {
 			persistance.expanded = _.without(persistance.expanded, id);
 		}
-		// save it
+		
+		saveStorage();
+	}
+
+	function loadSelected(id) {
+		return persistance.selected === id;
+	}
+
+	function saveSelected(id) {
+		persistance.selected = id;
+		saveStorage();
+	}
+
+	function saveStorage() {
 		localStorage[config.rootID] = JSON.stringify(persistance);
 	}
 
+
+	///////////////////////////////////////////////////////////
+	//
+	//	Public functions
+	//
 
 	return {
 		loadNode:loadNode,
